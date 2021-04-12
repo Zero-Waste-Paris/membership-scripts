@@ -6,6 +6,8 @@ if(!defined('ZWP_TOOLS')){  die(); }
 //Conf for helloasso
 define("HA_REGISTRATIONS_CAMPAIGN_ID", "TO_FILL");
 define("HA_AUTHENTICATION_TOKEN", "TO_FILL");
+define("HA_CLIENT_ID", "TO_FILL");
+define("HA_CLIENT_SECRET", "TO_FILL");
 
 //Conf for mailchimp
 define("MC_LIST_URL", "TO_FILL");
