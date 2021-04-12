@@ -64,4 +64,10 @@ class HelloAssoV5Connector {
     }
     file_put_contents(HELLOASSOV5_TOKENS_PATH, $content);
   }
+
+  // TODO:
+  // - handle pagination
+  // - handle the case where the tokens expired
+  //   expired access token  => 401, {"message":"Authorization has been denied for this request."}
+  //   expired refresh token => ???
 }
