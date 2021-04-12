@@ -34,10 +34,17 @@ class HelloAssoV5Connector {
   }
 
   public function parseAccessToken(){
-    // TODO
+    $tokens = $this->parseTokensAsArray();
+    return $tokens["access_token"];
+
   }
 
   public function parseRefreshToken(){
-    // TODO
+    $tokens = $this->parseTokensAsArray();
+    return $tokens["refresh_token"];
+  }
+
+  private function parseTokensAsArray(){
+    return json_decode(file_get_contents(HELLOASSOV5_TOKENS_PATH), true);
   }
 }
