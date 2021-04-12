@@ -13,24 +13,12 @@ class HelloAssoV5Connector {
      * For debugging purposes, to do a curl query from CLI:
      * curl -X POST 'https://api.helloasso.com/oauth2/token' -H 'content-type: application/x-www-form-urlencoded' --data-urlencode 'grant_type=client_credentials' --data-urlencode 'client_id=$CLIENT_ID' --data-urlencode 'client_secret=$CLIENT_SECRET'
      */
-    $curl = curl_init("https://api.helloasso.com/oauth2/token");
-    curl_setopt($curl, CURLOPT_HTTPHEADER, array("content-type: application/x-www-form-urlencoded"));
-    curl_setopt($curl, CURLOPT_POST, 1);
-
-    $payload = [
+    $raw_content = $this->doHACurlQuery([
       "grant_type" => "client_credentials",
       "client_id" => HA_CLIENT_ID,
       "client_secret" => HA_CLIENT_SECRET
-    ];
-
-    curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($payload));
-
-    $raw_content = do_curl_query($curl)->response;
-
-    if (!file_exists(dirname(HELLOASSOV5_TOKENS_PATH))) {
-        mkdir(dirname(HELLOASSOV5_TOKENS_PATH), 0700, true);
-    }
-    file_put_contents(HELLOASSOV5_TOKENS_PATH, $raw_content);
+    ]);
+    $this->writeTokensFile($raw_content);
   }
 
   public function parseAccessToken(){
@@ -46,5 +34,34 @@ class HelloAssoV5Connector {
 
   private function parseTokensAsArray(){
     return json_decode(file_get_contents(HELLOASSOV5_TOKENS_PATH), true);
+  }
+
+  public function refreshTokens(){
+    /**
+     * For debugging purposes, to do a curl query from CLI:
+     * curl -X POST 'https://api.helloasso.com/oauth2/token' -H 'content-type: application/x-www-form-urlencoded' --data-urlencode 'grant_type=refresh_token' --data-urlencode 'client_id=$CLIENT_ID' --data-urlencode 'refresh_token=$REFRESH_TOKEN'
+     */
+    $raw_content = $this->doHACurlQuery([
+      "grant_type" => "refresh_token",
+      "client_id" => HA_CLIENT_ID,
+      "refresh_token" => $this->parseRefreshToken()
+    ]);
+    $this->writeTokensFile($raw_content);
+  }
+
+  private function doHACurlQuery($payload){
+    $curl = curl_init("https://api.helloasso.com/oauth2/token");
+    curl_setopt($curl, CURLOPT_HTTPHEADER, array("content-type: application/x-www-form-urlencoded"));
+    curl_setopt($curl, CURLOPT_POST, 1);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($payload));
+
+    return do_curl_query($curl)->response;
+  }
+
+  private function writeTokensFile($content){
+    if (!file_exists(dirname(HELLOASSOV5_TOKENS_PATH))) {
+        mkdir(dirname(HELLOASSOV5_TOKENS_PATH), 0700, true);
+    }
+    file_put_contents(HELLOASSOV5_TOKENS_PATH, $content);
   }
 }
