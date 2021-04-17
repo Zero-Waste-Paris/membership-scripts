@@ -7,27 +7,48 @@ require_once(ZWP_TOOLS . 'config.php');
 const HELLOASSOV5_TOKENS_PATH  = __DIR__ . "/helloassoV5_tokens.json";
 
 class HelloAssoV5Connector {
+  public function __construct(){
+    // An access token has a lifetime of 30 minutes so by refreshing it upon instantiation
+    // we ensure the query will have a valid token whenever it needs it.
+    // This logic is suboptimal in number of queries to get fresh tokens but:
+    // - it leads to simpler code
+    // - since our main endpoint is most of the time called only once per hour, it doesn't matter that much
+    $this->ensureTokensOnDiskAreUpToDate();
+  }
+
+  private function ensureTokensOnDiskAreUpToDate(){
+    // According to Helloasso doc:
+    // > you MUST obtain a new access_token using the refresh_token issued to you,
+    // > and MUST NOT obtain a new access_token by using the client
+    if (file_exists(HELLOASSOV5_TOKENS_PATH)){
+      $this->refreshTokens();
+    } else {
+      $this->getTokensFromScratch();
+    }
+  }
 
   public function getTokensFromScratch() {
+    global $loggerInstance;
+    $loggerInstance->log_info("Going to get helloasso tokens from scratch");
     /**
      * For debugging purposes, to do a curl query from CLI:
      * curl -X POST 'https://api.helloasso.com/oauth2/token' -H 'content-type: application/x-www-form-urlencoded' --data-urlencode 'grant_type=client_credentials' --data-urlencode 'client_id=$CLIENT_ID' --data-urlencode 'client_secret=$CLIENT_SECRET'
      */
-    $raw_content = $this->doHACurlQuery([
+    $raw_content = $this->doHAQueryToGetTokens([
       "grant_type" => "client_credentials",
       "client_id" => HA_CLIENT_ID,
       "client_secret" => HA_CLIENT_SECRET
-    ]);
+    ])->response;
     $this->writeTokensFile($raw_content);
   }
 
-  public function parseAccessToken(){
+  private function parseAccessToken(){
     $tokens = $this->parseTokensAsArray();
     return $tokens["access_token"];
 
   }
 
-  public function parseRefreshToken(){
+  private function parseRefreshToken(){
     $tokens = $this->parseTokensAsArray();
     return $tokens["refresh_token"];
   }
@@ -37,25 +58,33 @@ class HelloAssoV5Connector {
   }
 
   public function refreshTokens(){
+    global $loggerInstance;
     /**
      * For debugging purposes, to do a curl query from CLI:
      * curl -X POST 'https://api.helloasso.com/oauth2/token' -H 'content-type: application/x-www-form-urlencoded' --data-urlencode 'grant_type=refresh_token' --data-urlencode 'client_id=$CLIENT_ID' --data-urlencode 'refresh_token=$REFRESH_TOKEN'
      */
-    $raw_content = $this->doHACurlQuery([
+    $loggerInstance->log_info("Going to use helloasso refresh token");
+    $response = $this->doHAQueryToGetTokens([
       "grant_type" => "refresh_token",
       "client_id" => HA_CLIENT_ID,
       "refresh_token" => $this->parseRefreshToken()
     ]);
-    $this->writeTokensFile($raw_content);
+    if ($response->httpCode == 401){
+      $logger->log_info("Got 401 when trying to use helloasso refresh token. We try to get brand new ones");
+      $this->getTokensFromScratch();
+    } else {
+      $logger->log_info("Successfully got new helloasso tokens");
+      $this->writeTokensFile($response->response);
+    }
   }
 
-  private function doHACurlQuery($payload){
+  private function doHAQueryToGetTokens($payload){
     $curl = curl_init("https://api.helloasso.com/oauth2/token");
     curl_setopt($curl, CURLOPT_HTTPHEADER, array("content-type: application/x-www-form-urlencoded"));
     curl_setopt($curl, CURLOPT_POST, 1);
     curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($payload));
 
-    return do_curl_query($curl)->response;
+    return do_curl_query($curl);
   }
 
   private function writeTokensFile($content){
@@ -94,7 +123,7 @@ class HelloAssoV5Connector {
   }
 
   private function getHelloAssoJsonSubscriptionsForOneCampaign(DateTime $from, DateTime $to, $formSlug){
-    $accessToken = /*TODO*/;
+    $accessToken = $this->parseAccessToken();
     $url = "https://api.helloasso.com/v5/organizations/"
       . HA_ORGANIZATION_SLUG
       . "/forms/Membership/$formSlug/items"
@@ -105,7 +134,7 @@ class HelloAssoV5Connector {
     $curl = curl_init($url);
     curl_setopt($curl, CURLOPT_HTTPHEADER, array("Authorization: Bearer $accessToken"));
 
-    $raw_content = do_curl_query($curl)->response; // TODO: handle the case of the expired token?
+    $raw_content = do_curl_query($curl)->response;
     $json = json_decode($raw_content, true);
     if ( $json === NULL ){
       $loggerInstance->log_error("failed to parse: " . $raw_content);
@@ -138,7 +167,7 @@ class HelloAssoV5Connector {
           $result->postal_code = $customField["answer"];
           break;
         case "Date de naissance":
-          $result->birth_date = $customField["answer"]; //TODO check that the format YY/MM/YYYY is fine
+          $result->birth_date = $customField["answer"];
           break;
         case "Numéro de téléphone":
            $result->phone = $customField["answer"];
@@ -166,9 +195,4 @@ class HelloAssoV5Connector {
 
     return $result;
   }
-
-  // TODO:
-  // - handle the case where the tokens expired
-  //   expired access token  => 401, {"message":"Authorization has been denied for this request."}
-  //   expired refresh token => ???
 }
