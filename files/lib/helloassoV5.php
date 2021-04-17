@@ -73,7 +73,7 @@ class HelloAssoV5Connector {
       $logger->log_info("Got 401 when trying to use helloasso refresh token. We try to get brand new ones");
       $this->getTokensFromScratch();
     } else {
-      $logger->log_info("Successfully got new helloasso tokens");
+      $loggerInstance->log_info("Successfully got new helloasso tokens");
       $this->writeTokensFile($response->response);
     }
   }
@@ -123,12 +123,13 @@ class HelloAssoV5Connector {
   }
 
   private function getHelloAssoJsonSubscriptionsForOneCampaign(DateTime $from, DateTime $to, $formSlug){
+    global $loggerInstance;
     $accessToken = $this->parseAccessToken();
     $url = "https://api.helloasso.com/v5/organizations/"
       . HA_ORGANIZATION_SLUG
       . "/forms/Membership/$formSlug/items"
       . "?from=" . dateToStr($from)
-      . "&to=" . dateStr($to)
+      . "&to=" . dateToStr($to)
       . "&withDetails=true" // to get custom fields
       . "&retrieveAll=true"; // so we don't have to bother with pagination
     $curl = curl_init($url);
