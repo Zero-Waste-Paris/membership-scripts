@@ -27,7 +27,7 @@ class HelloAssoV5Connector {
     }
   }
 
-  public function getTokensFromScratch() {
+  private function getTokensFromScratch() {
     global $loggerInstance;
     $loggerInstance->log_info("Going to get helloasso tokens from scratch");
     /**
@@ -57,7 +57,7 @@ class HelloAssoV5Connector {
     return json_decode(file_get_contents(HELLOASSOV5_TOKENS_PATH), true);
   }
 
-  public function refreshTokens(){
+  private function refreshTokens(){
     global $loggerInstance;
     /**
      * For debugging purposes, to do a curl query from CLI:
@@ -95,7 +95,7 @@ class HelloAssoV5Connector {
   }
 
 
-  function getAllHelloAssoSubscriptions(DateTime $from, DateTime $to){
+  public function getAllHelloAssoSubscriptions(DateTime $from, DateTime $to){
     global $loggerInstance;
 
     $loggerInstance->log_info("Going to get HelloAsso registrations");
