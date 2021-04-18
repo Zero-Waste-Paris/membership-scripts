@@ -6,7 +6,7 @@ require_once(ZWP_TOOLS . 'config.php');
 
 const HELLOASSOV5_TOKENS_PATH  = __DIR__ . "/helloassoV5_tokens.json";
 
-class HelloAssoV5Connector {
+class HelloAssoConnector {
   public function __construct(){
     // An access token has a lifetime of 30 minutes so by refreshing it upon instantiation
     // we ensure the query will have a valid token whenever it needs it.
