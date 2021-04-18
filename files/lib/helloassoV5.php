@@ -149,7 +149,7 @@ class HelloAssoV5Connector {
     $result = new RegistrationEvent();
     $result->helloasso_event_id = $jsonRegistration["id"];
     $result->event_date = $jsonRegistration["order"]["date"];
-    $result->amount = $jsonRegistraion["initialAmount"];
+    $result->amount = $jsonRegistration["initialAmount"];
     $result->first_name = $jsonRegistration["user"]["firstName"];
     $result->last_name = $jsonRegistration["user"]["lastName"];
 
