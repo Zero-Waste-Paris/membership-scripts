@@ -22,6 +22,20 @@ class DefaultApi implements DefaultApiInterface {
 		$this->memberImporter = $memberImporter;
 	}
 
+    public function apiDebugGet(int &$responseCode, array &$responseHeaders): void {
+      $member = new Member();
+      $member->setFirstName("toto");
+      $member->setLastName("tata");
+      $member->setEmail("toto@tata.com");
+      $member->setHelloAssoLastRegistrationEventId(1);
+      $member->setFirstRegistrationDate(new \DateTime("2017"));
+      $member->setLastRegistrationDate(new \DateTime());
+      $member->setIsZWProfessional(false);
+      $member->setNotificationSentToAdmin(false);
+
+      $this->memberRepository->save($member, true);
+    }
+
 	public function apiMembersSortedByLastRegistrationDateGet(?\DateTime $since, int &$responseCode, array &$responseHeaders): array|object|null {
 		if ($since == null) {
 			$since = $this->registrationDateUtil->getDateAfterWhichMembershipIsConsideredValid();

@@ -3,6 +3,11 @@ info:
   title: ZWP Dashboard
   version: 0.0.1
 paths:
+  /api/debug:
+    get:
+      responses:
+        "204":
+          description: OK
   /api/trigger-import-run:
     get: # should perhaps be a POST for semantic reasons, but has to be GET in order to be usable by our web cron
       summary: Trigger a run to fetch the last registrations from helloasso and register them in the needed groups
