@@ -6,6 +6,8 @@ import { Configuration as LoginConfiguration, ConfigurationParameters as LoginCo
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { MatTableModule } from '@angular/material/table';
+import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -38,6 +40,8 @@ function buildClientsConfigParameters() {
 		ReactiveFormsModule,
 		ApiModule.forRoot(clientConfigFactory),
 		LoginApiModule.forRoot(loginClientConfigFactory),
+		MatTableModule,
+		MatSortModule,
 	],
 	providers: [],
 	bootstrap: [AppComponent]
