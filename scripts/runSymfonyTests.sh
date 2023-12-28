@@ -22,6 +22,6 @@ echo "Creating the schema of the test database"
 php bin/console --env=test doctrine:schema:create
 echo "Initialize some values in the test database"
 php bin/console doctrine:database:initialize-last-successful-run-date 2022-01-01
-php bin/console user:add testuser testpassword
+echo testpassword | php bin/console user:add testuser
 
 APP_ENV=test XDEBUG_MODE=coverage php bin/phpunit --coverage-html coverage $@

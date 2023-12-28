@@ -20,7 +20,8 @@ class UserCommandsTest extends KernelTestCase
 
 		// Create a user
 		$addUserCommand = new CommandTester($application->find('user:add'));
-		$addUserCommand->execute(["email" => $userEmail, "password" => "mypassword"]);
+		$addUserCommand->setInputs(["mypassword"]);
+		$addUserCommand->execute(["email" => $userEmail]);
 		$addUserCommand->assertCommandIsSuccessful();
 
 		// // Assert user is created
@@ -31,7 +32,8 @@ class UserCommandsTest extends KernelTestCase
 
 		// Test password update command (just ensure it does not crash, no assertions here)
 		$updateUserPasswordCommand = new CommandTester($application->find('user:update-password'));
-		$updateUserPasswordCommand->execute(["email" => $userEmail, "password" => "my-new-password"]);
+		$updateUserPasswordCommand->setInputs(["my-new-password"]);
+		$updateUserPasswordCommand->execute(["email" => $userEmail]);
 		$updateUserPasswordCommand->assertCommandIsSuccessful();
 
 		// Delete user

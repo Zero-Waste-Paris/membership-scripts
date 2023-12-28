@@ -86,7 +86,7 @@ After cloning this repo and from the top of it:
 		php bin/console member:add someonelse@mail.com
 		
     ## And now let's create your user account (to access the API)
-		php bin/console user:add me@mail.eu my_password
+		php bin/console user:add me@mail.eu # you will be prompted to enter a password interactively
 
     ## Launch the local server
     symfony server:start --no-tls # add --port=value to listen on a specific port
