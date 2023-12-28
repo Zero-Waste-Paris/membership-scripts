@@ -32,7 +32,7 @@ class HelloAssoConnector {
 			private HelloAssoAuthenticator $authenticator,
 			) {}
 
-	public function getAllHelloAssoSubscriptions(\DateTime $from, \DateTime $to){
+	public function getAllHelloAssoSubscriptions(\DateTime $from, \DateTime $to): array{
 		$this->logger->info("Going to get HelloAsso registrations");
 		$formSlug = $this->params->get("helloasso.registrationFormSlug");
 		$actions1 = $this->getAllHelloAssoSubscriptionsForOneCampaign($from, $to, $formSlug);
@@ -49,7 +49,7 @@ class HelloAssoConnector {
 		return array_merge($actions1, $actions2);
 	}
 
-	private function getAllHelloAssoSubscriptionsForOneCampaign(\DateTime $from, \DateTime $to, string $formSlug){
+	private function getAllHelloAssoSubscriptionsForOneCampaign(\DateTime $from, \DateTime $to, string $formSlug): array {
 		$this->logger->info("Going to fetch data from $formSlug");
 		$result = array();
 		$json = $this->getHelloAssoJsonSubscriptionsForOneCampaign($from, $to, $formSlug);
@@ -125,7 +125,7 @@ class HelloAssoConnector {
 				case "Code Postal":
 					$result->postal_code = $customField["answer"];
 					break;
-				case "Numéro de téléphone":
+				case "téléphone (facultatif. Afin de pouvoir contacter les membres qui souhaitent participer activement)":
 					$result->phone = $customField["answer"];
 					break;
 				case "Comment as-tu connu Zero Waste Paris ?":

@@ -18,6 +18,7 @@ trait TestHelperTrait {
 		$ret->how_did_you_know_zwp = "";
 		$ret->want_to_do = "";
 		$ret->is_zw_professional = "Non";
+		$ret->phone = "+331234567890";
 
 		$ret->helloasso_event_id = (string) $this->lastHelloAssoEventId;
 		$this->lastHelloAssoEventId++;

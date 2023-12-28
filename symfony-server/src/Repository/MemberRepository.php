@@ -83,6 +83,7 @@ class MemberRepository extends ServiceEntityRepository
 		$member->setCity($event->city);
 		$member->setHowDidYouKnowZwp($event->how_did_you_know_zwp);
 		$member->setWantToDo($event->want_to_do);
+		$member->setPhone($event->phone);
 		$member->setLastRegistrationDate(new \DateTime($event->event_date));
 		$member->setIsZWProfessional($event->is_zw_professional == "Oui");
 	}

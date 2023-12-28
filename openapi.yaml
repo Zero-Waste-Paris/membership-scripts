@@ -137,6 +137,8 @@ paths:
                     firstRegistrationDate:
                       type: string
                       format: date
+                    phone:
+                      type: string
                     lastRegistrationDate:
                       type: string
                       format: date

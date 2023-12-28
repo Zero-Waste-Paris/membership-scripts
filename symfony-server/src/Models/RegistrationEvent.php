@@ -24,7 +24,7 @@ class RegistrationEvent {
 	public string $first_name;
 	public string $last_name;
 	public string $email;
-	public string $phone;
+	public string $phone = "";
 	public string $postal_code;
 	public string $city;
 	public string $is_zw_professional;   // Beware, this is a string with value either "Oui" or "Non"

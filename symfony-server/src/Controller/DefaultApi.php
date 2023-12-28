@@ -73,6 +73,7 @@ class DefaultApi implements DefaultApiInterface {
 			$data['lastRegistrationDate'] = $entity->getLastRegistrationDate();
 			$data['isZWProfessional'] = $entity->isIsZWProfessional();
 			$data['additionalEmails'] = $entity->getAdditionalEmails();
+			$data['phone'] = $entity->getPhone();
 
 			$result []= new ApiMembersSortedByLastRegistrationDateGet200ResponseInner($data);
 		}

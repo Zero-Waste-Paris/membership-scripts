@@ -63,6 +63,9 @@ class Member
 	#[ORM\Column(type: Types::DATETIME_MUTABLE)]
 	private ?\DateTimeInterface $lastRegistrationDate = null;
 
+	#[ORM\Column(length: 20)]
+	private ?string $phone = null;
+
 	#[ORM\Column]
 	private ?bool $isZWProfessional = null;
 
@@ -146,6 +149,18 @@ class Member
 	public function setCity(?string $city): static
 	{
 		$this->city = $city;
+
+		return $this;
+	}
+
+	public function getPhone(): ?string
+	{
+		return $this->phone;
+	}
+
+	public function setPhone(?string $phone): static
+	{
+		$this->phone = $phone;
 
 		return $this;
 	}
