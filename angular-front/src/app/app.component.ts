@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { MatTableModule } from '@angular/material/table';
+import { Component, ViewChild } from '@angular/core';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { DefaultService } from './generated/api/api/default.service';
 import { DefaultLoginService } from './generated/login/api/default.service';
 import { LoginPostRequest} from './generated/login/model/loginPostRequest';
@@ -15,20 +16,22 @@ import { NgIf, NgClass, NgFor } from '@angular/common';
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.css'],
 	standalone: true,
-	imports: [NgIf, LoginComponent, NgClass, NgFor, PasswordChangerComponent, MatTableModule]
+	imports: [NgIf, LoginComponent, NgClass, NgFor, PasswordChangerComponent, MatTableModule, MatSortModule]
 })
 export class AppComponent {
 	loggedIn = false; // TODO: also get the name somehow?
 	logoutInProgress = false;
 	page = "members";
 	membersLoaded: boolean = false;
-	members: Array<ApiMembersSortedByLastRegistrationDateGet200ResponseInner> = [];
+	members: MatTableDataSource<ApiMembersSortedByLastRegistrationDateGet200ResponseInner> = new MatTableDataSource(new Array<ApiMembersSortedByLastRegistrationDateGet200ResponseInner>());
 	displayedColumns: string[] = ['lastRegistrationDate', 'firstName'];
 
 	constructor(
 		private apiClient: DefaultService,
 		private loginClient: DefaultLoginService,
 	) {}
+
+	@ViewChild(MatSort) sort!: MatSort;
 
 	loginInitializedEventReceived() {
 		this.loggedIn = true;
@@ -45,7 +48,9 @@ export class AppComponent {
 		obs.subscribe({
 			next(members) {
 				console.log("got " + members.length + " members");
-				self.members = members.reverse();
+				self.members = new MatTableDataSource(members.reverse());
+				console.log("tempGT: sort: " + self.sort);
+				self.members.sort = self.sort;
 				self.membersLoaded = true;
 			},
 			error(err) {
