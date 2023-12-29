@@ -9,6 +9,7 @@ import { ApiModule } from './app/generated/api/api.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { withInterceptorsFromDi, provideHttpClient } from '@angular/common/http';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 function clientConfigFactory(): Configuration {
 	return new Configuration(buildClientsConfigParameters());
@@ -26,8 +27,9 @@ function buildClientsConfigParameters() {
 
 bootstrapApplication(AppComponent, {
 	providers: [
-		importProvidersFrom(BrowserModule, FormsModule, ReactiveFormsModule, ApiModule.forRoot(clientConfigFactory), LoginApiModule.forRoot(loginClientConfigFactory)),
-		provideHttpClient(withInterceptorsFromDi())
-	]
+    importProvidersFrom(BrowserModule, FormsModule, ReactiveFormsModule, ApiModule.forRoot(clientConfigFactory), LoginApiModule.forRoot(loginClientConfigFactory)),
+    provideHttpClient(withInterceptorsFromDi()),
+    provideAnimations()
+]
 })
 	.catch(err => console.error(err));
