@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DefaultLoginService } from '../generated/login/api/default.service';
 import { LoginPostRequest} from '../generated/login/model/loginPostRequest';
 import { User } from '../generated/login/model/user';
@@ -8,7 +8,9 @@ import { Observable } from 'rxjs';
 @Component({
 	selector: 'app-login',
 	templateUrl: './login.component.html',
-	styleUrls: ['./login.component.css']
+	styleUrls: ['./login.component.css'],
+	standalone: true,
+	imports: [FormsModule, ReactiveFormsModule]
 })
 export class LoginComponent {
 	@Output() loginSuccessful = new EventEmitter();

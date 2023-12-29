@@ -1,7 +1,33 @@
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
-import { AppModule } from './app/app.module';
+import { importProvidersFrom } from '@angular/core';
+import { AppComponent } from './app/app.component';
+import { LoginApiModule } from './app/generated/login/api.module';
+import { Configuration as LoginConfiguration } from './app/generated/login/configuration';
+import { Configuration } from './app/generated/api/configuration';
+import { ApiModule } from './app/generated/api/api.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { withInterceptorsFromDi, provideHttpClient } from '@angular/common/http';
+import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 
+function clientConfigFactory(): Configuration {
+	return new Configuration(buildClientsConfigParameters());
+}
+function loginClientConfigFactory(): LoginConfiguration {
+	return new LoginConfiguration(buildClientsConfigParameters());
+}
+function buildClientsConfigParameters() {
+	let host = window.location.host;
+	let protocol = window.location.protocol;
+	return {
+		basePath: protocol + "//" + host
+	}
+}
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.error(err));
+bootstrapApplication(AppComponent, {
+	providers: [
+		importProvidersFrom(BrowserModule, FormsModule, ReactiveFormsModule, ApiModule.forRoot(clientConfigFactory), LoginApiModule.forRoot(loginClientConfigFactory)),
+		provideHttpClient(withInterceptorsFromDi())
+	]
+})
+	.catch(err => console.error(err));

@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { DefaultService } from '../generated/api/api/default.service';
 import { ApiUpdateUserPasswordPostRequest } from '../generated/api/model/apiUpdateUserPasswordPostRequest';
@@ -7,7 +7,9 @@ import { ApiUpdateUserPasswordPostRequest } from '../generated/api/model/apiUpda
 @Component({
 	selector: 'app-password-changer',
 	templateUrl: './password-changer.component.html',
-	styleUrls: ['./password-changer.component.css']
+	styleUrls: ['./password-changer.component.css'],
+	standalone: true,
+	imports: [FormsModule, ReactiveFormsModule]
 })
 export class PasswordChangerComponent {
 	@Output() passwordChangedSuccessfully = new EventEmitter();
