@@ -8,9 +8,9 @@
 </ul>
 
 <div *ngIf="this.page === 'members'">
-<!--div *ngIf="!membersLoaded; else membersTable">Chargement des membres en cours</div>
+<div *ngIf="!membersLoaded; else membersTable">Chargement des membres en cours</div>
 
-<ng-template #membersTable-->
+<ng-template #membersTable>
 <table mat-table [dataSource]="members" matSort>
 	<ng-container matColumnDef="lastRegistrationDate">
 		<th mat-header-cell *matHeaderCellDef mat-sort-header>Dernière adhésion</th>
@@ -42,7 +42,7 @@
 	</td>
 </tr>
 </table-->
-<!--/ng-template-->
+</ng-template>
 </div>
 
 <app-password-changer *ngIf="this.page === 'account'" (passwordChangedSuccessfully)="passwordChangedSuccessfullyEventReceived()"></app-password-changer>
