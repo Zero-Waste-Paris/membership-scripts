@@ -69,6 +69,7 @@ class AddMember extends Command {
 		$member->setLastRegistrationDate(new \DateTime());
 		$member->setIsZWProfessional(false);
 		$member->setNotificationSentToAdmin(false);
+		$member->setPhone($this->generateRandomString(10));
 
 		return $member;
 	}
