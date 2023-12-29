@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MatTableModule } from '@angular/material/table';
 import { DefaultService } from './generated/api/api/default.service';
 import { DefaultLoginService } from './generated/login/api/default.service';
 import { LoginPostRequest} from './generated/login/model/loginPostRequest';
@@ -14,14 +15,15 @@ import { NgIf, NgClass, NgFor } from '@angular/common';
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.css'],
 	standalone: true,
-	imports: [NgIf, LoginComponent, NgClass, NgFor, PasswordChangerComponent]
+	imports: [NgIf, LoginComponent, NgClass, NgFor, PasswordChangerComponent, MatTableModule]
 })
 export class AppComponent {
 	loggedIn = false; // TODO: also get the name somehow?
 	logoutInProgress = false;
 	page = "members";
-	members: Array<ApiMembersSortedByLastRegistrationDateGet200ResponseInner> | null = null;
-
+	membersLoaded: boolean = false;
+	members: Array<ApiMembersSortedByLastRegistrationDateGet200ResponseInner> = [];
+	displayedColumns: string[] = ['lastRegistrationDate', 'firstName'];
 
 	constructor(
 		private apiClient: DefaultService,
@@ -44,6 +46,7 @@ export class AppComponent {
 			next(members) {
 				console.log("got " + members.length + " members");
 				self.members = members.reverse();
+				self.membersLoaded = true;
 			},
 			error(err) {
 				console.log("failed to get members: " + JSON.stringify(err));
