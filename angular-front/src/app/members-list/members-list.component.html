@@ -43,6 +43,11 @@
 	</ng-container>
 
 	<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-	<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+	<tr
+		mat-row
+		*matRowDef="let row; columns: displayedColumns;"
+		[class.row-member-up-to-date] = "row.isRegistrationUpToDate"
+		[class.row-member-outdated]   = "!row.isRegistrationUpToDate"
+	></tr>
 
 </table>
