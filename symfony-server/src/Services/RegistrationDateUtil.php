@@ -19,6 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 namespace App\Services;
 
 class RegistrationDateUtil {
+	private \DateTime $januaryFirstThisYear;
 	private \DateTime $februaryFirstThisYear;
 	private \DateTimeZone $timeZone;
 	private string $thisYear;
@@ -27,16 +28,17 @@ class RegistrationDateUtil {
 		$this->thisYear = $this->nowProvider->getNow()->format("Y");
 		$this->timeZone = new \DateTimeZone("Europe/Paris");
 		$this->februaryFirstThisYear = new \DateTime($this->thisYear . "-02-01", $this->timeZone);
+		$this->januaryFirstThisYear = new \DateTime($this->thisYear . "-01-01", $this->timeZone);
 	}
 
 	/**
-	 * When someone joins during year N, her membership is valid until 31 December of year N.
-	 * But we want to keep members in the mailing list only on 1st February N+1 (to let time for members
-	 * to re-new their membership, otherwise we would have 0 members on 1st January at midnight)
+	 * According to status:
+	 * - when someone joins before Sept. 1st of year N, her membership is valid until Dec. 31st of the same year.
+	 * - when someone joins after Sept. 1st of year N, her membership is valid until Dec. 31st of year N+1
 	 */
 	public function getDateAfterWhichMembershipIsConsideredValid() :\DateTime {
-		$monthAndDay = "-09-01"; // According to the status a registration after 1st september of year N is valid for all year N+1
-		if ( $this->nowProvider->getNow() >= $this->februaryFirstThisYear ){
+		$monthAndDay = "-09-01";
+		if ( $this->nowProvider->getNow() >= $this->januaryFirstThisYear ){
 			return new \DateTime(($this->thisYear-1) . $monthAndDay, $this->timeZone);
 		} else {
 			return new \DateTime(($this->thisYear-2) . $monthAndDay, $this->timeZone);
