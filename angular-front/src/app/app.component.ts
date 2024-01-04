@@ -6,6 +6,7 @@ import { User } from './generated/login/model/user';
 import { ApiMembersSortedByLastRegistrationDateGet200ResponseInner } from './generated/api/model/apiMembersSortedByLastRegistrationDateGet200ResponseInner';
 import { Observable } from 'rxjs';
 import { PasswordChangerComponent } from './password-changer/password-changer.component';
+import { SlackOutdatedComponent } from './slack-outdated/slack-outdated.component';
 import { MembersListComponent } from './members-list/members-list.component';
 import { LoginComponent } from './login/login.component';
 import { NgIf, NgClass } from '@angular/common';
@@ -15,7 +16,7 @@ import { NgIf, NgClass } from '@angular/common';
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.css'],
 	standalone: true,
-	imports: [NgIf, LoginComponent, NgClass, PasswordChangerComponent, MembersListComponent]
+	imports: [NgIf, LoginComponent, NgClass, PasswordChangerComponent, MembersListComponent, SlackOutdatedComponent]
 })
 export class AppComponent {
 	loggedIn = false; // TODO: also get the name somehow?
