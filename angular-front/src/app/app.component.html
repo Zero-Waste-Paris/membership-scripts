@@ -4,6 +4,7 @@
 <ul class="menu">
 	<li (click)="setPage('members')" [ngClass]="{'active': this.page === 'members'}">Membres</li>
 	<li (click)="setPage('account')" [ngClass]="{'active': this.page === 'account'}">Compte</li>
+	<li (click)="setPage('slack-outdated')" [ngClass]="{'active': this.page === 'slack-outdated'}">Comptes Slack à désactiver</li>
 	<li (click)="logout()">Logout</li>
 </ul>
 
@@ -16,5 +17,7 @@
 </div>
 
 <app-password-changer *ngIf="this.page === 'account'" (passwordChangedSuccessfully)="passwordChangedSuccessfullyEventReceived()"></app-password-changer>
+
+<app-slack-outdated *ngIf="this.page === 'slack-outdated'"></app-slack-outdated>
 
 </ng-template>

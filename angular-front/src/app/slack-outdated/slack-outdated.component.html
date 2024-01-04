@@ -1,0 +1,10 @@
+<div *ngIf="!data">Chargement en cours</div>
+
+<div *ngIf="data">
+	<span *ngIf="!data.isFresh" class="warning">Utilisation de données en cache datant de {{this.dataFreshnessAsString}}</span>
+
+	<ul>
+		<li *ngFor="let member of this.data.members">{{member}}</li>
+	</ul>
+</div>
+
