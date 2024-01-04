@@ -66,16 +66,9 @@ paths:
           description: User is not authenticated
         "403":
           description: currentPassword is incorrect
-  /api/members-sorted-by-last-registration-date:
+  /api/members:
     get:
-      summary: Get the list of members who registered since the date specified if any, from the beginning of the current registration period otherwise
-      parameters:
-        - name: since
-          in: query
-          required: false
-          schema:
-            type: string
-            format: date
+      summary: Get the list of members (both current and former ones)
       responses:
         "200":
           description: OK
@@ -95,6 +88,7 @@ paths:
                     - isZWProfessional
                     - lastRegistrationDate
                     - additionalEmails
+                    - isRegistrationUpToDate
                   properties:
                     userId:
                       type: integer
@@ -129,6 +123,8 @@ paths:
                       items:
                         type: string
                         format: email
+                    isRegistrationUpToDate:
+                      type: boolean
 components:
   schemas:
     timestampedSlackUserList:

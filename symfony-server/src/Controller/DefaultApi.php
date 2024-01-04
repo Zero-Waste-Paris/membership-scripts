@@ -19,7 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 namespace App\Controller;
 
 use OpenAPI\Server\Api\DefaultApiInterface;
-use OpenAPI\Server\Model\ApiMembersSortedByLastRegistrationDateGet200ResponseInner;
+use OpenAPI\Server\Model\ApiMembersGet200ResponseInner;
 use OpenAPI\Server\Model\ApiUpdateUserPasswordPostRequest;
 use OpenAPI\Server\Model\TimestampedSlackUserList;
 use App\Models\SlackMembersTimestamped;
@@ -50,14 +50,11 @@ class DefaultApi implements DefaultApiInterface {
 		private Security $security, // Wouldn't be needed if we extends AbstractController, but it would make the code harder to test
 	) { }
 
-	public function apiMembersSortedByLastRegistrationDateGet(?\DateTime $since, int &$responseCode, array &$responseHeaders): array|object|null {
-		if ($since == null) {
-			$since = $this->registrationDateUtil->getDateAfterWhichMembershipIsConsideredValid();
-			$this->logger->info("getting member without specifying a start date. We use " . $since->format('Y-m-d\TH:i:s'));
-		}
+	public function apiMembersGet(int &$responseCode, array &$responseHeaders): array|object|null {
+		$registrationThreshold = $this->registrationDateUtil->getDateAfterWhichMembershipIsConsideredValid();
 
 		$result = array();
-		foreach($this->memberRepository->getOrderedListOfLastRegistrations($since) as $entity) {
+		foreach($this->memberRepository->findAll() as $entity) {
 			$data = array();
 			$data['userId'] = $entity->getId();
 			$data['firstName'] = $entity->getFirstName();
@@ -73,8 +70,9 @@ class DefaultApi implements DefaultApiInterface {
 			$data['isZWProfessional'] = $entity->isIsZWProfessional();
 			$data['additionalEmails'] = $entity->getAdditionalEmails();
 			$data['phone'] = $entity->getPhone();
+			$data['isRegistrationUpToDate'] = $entity->getLastRegistrationDate() >= $registrationThreshold;
 
-			$result []= new ApiMembersSortedByLastRegistrationDateGet200ResponseInner($data);
+			$result []= new ApiMembersGet200ResponseInner($data);
 		}
 
 		return $result;

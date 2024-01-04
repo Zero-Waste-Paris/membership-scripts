@@ -3,7 +3,7 @@ import { DefaultService } from './generated/api/api/default.service';
 import { DefaultLoginService } from './generated/login/api/default.service';
 import { LoginPostRequest} from './generated/login/model/loginPostRequest';
 import { User } from './generated/login/model/user';
-import { ApiMembersSortedByLastRegistrationDateGet200ResponseInner } from './generated/api/model/apiMembersSortedByLastRegistrationDateGet200ResponseInner';
+import { ApiMembersGet200ResponseInner } from './generated/api/model/apiMembersGet200ResponseInner';
 import { Observable } from 'rxjs';
 import { PasswordChangerComponent } from './password-changer/password-changer.component';
 import { MembersListComponent } from './members-list/members-list.component';
@@ -22,7 +22,7 @@ export class AppComponent {
 	logoutInProgress = false;
 	page = "members";
 	membersLoaded: boolean = false;
-	members: Array<ApiMembersSortedByLastRegistrationDateGet200ResponseInner> = [];
+	members: Array<ApiMembersGet200ResponseInner> = [];
 
 	constructor(
 		private apiClient: DefaultService,
@@ -40,7 +40,7 @@ export class AppComponent {
 	}
 
 	fetchMembers() {
-		let obs: Observable<Array<ApiMembersSortedByLastRegistrationDateGet200ResponseInner>> = this.apiClient.apiMembersSortedByLastRegistrationDateGet();
+		let obs: Observable<Array<ApiMembersGet200ResponseInner>> = this.apiClient.apiMembersGet();
 		let self = this;
 		obs.subscribe({
 			next(members) {

@@ -14,7 +14,7 @@ use App\Controller\DefaultApi;
 use App\Entity\User;
 use App\Repository\UserRepository;
 
-use OpenAPI\Server\Model\ApiMembersSortedByLastRegistrationDateGet200ResponseInner;
+use OpenAPI\Server\Model\ApiMembersGet200ResponseInner;
 use OpenAPI\Server\Model\ApiUpdateUserPasswordPostRequest;
 
 use Symfony\Bundle\SecurityBundle\Security;
@@ -41,38 +41,35 @@ class DefaultApiTest extends KernelTestCase {
 		self::getContainer()->set(NowProvider::class, $nowProviderMock);
 
 		// Setup placeholder members
-		// (Nb: we rRegister in "random" order so that when we test how the API response are sorted, it does not work "by chance")
 		$memberRepo = self::getContainer()->get(MemberRepository::class);
-		$this->buildAndRegisterMember($memberRepo, "2023-09-08", "tata", "somename", "tata@mail.com", "75018");
-		$this->buildAndRegisterMember($memberRepo, "2023-11-08", "toto", "somename", "toto@mail.com", "92100");
-		$this->buildAndRegisterMember($memberRepo, "2023-03-04", "titi", "somename", "titi@mail.com", "92100");
-		$this->buildAndRegisterMember($memberRepo, "2020-01-01", "soOld", "shouldntBeReturned", "old@mail.com", "75018");
+		$this->buildAndRegisterMember($memberRepo, "2020-01-01", "soOld", "shouldntBeReturned", "old@mail.com", "75018", false);
+		$this->buildAndRegisterMember($memberRepo, "2023-03-04", "titi", "somename", "titi@mail.com", "92100", true);
+		$this->buildAndRegisterMember($memberRepo, "2023-09-08", "tata", "somename", "tata@mail.com", "75018", true);
+		$this->buildAndRegisterMember($memberRepo, "2023-11-08", "toto", "somename", "toto@mail.com", "92100", true);
 	}
 
-	public function test_apiMembersSortedByLastRegistrationDateGet(): void {
+	public function test_apiMembersGet(): void {
 		$sut = self::getContainer()->get(DefaultApi::class);
 
-		// Test with a "since" parameter
-		$this->assertEquals(
-			array($this->members["2023-09-08"], $this->members["2023-11-08"]),
-			$sut->apiMembersSortedByLastRegistrationDateGet(new \DateTime("2023-04-01"), $this->responseCode, $this->responseHeaders));
+		$actualMembers = $sut->apiMembersGet($this->responseCode, $this->responseHeaders);
 
-		// Test without "since" parameter
+		// sort the array to ease asserting on its content (since that method can return the items in any order)
+		usort($actualMembers, function(ApiMembersGet200ResponseInner $m1, ApiMembersGet200ResponseInner $m2) {return $m1->getLastRegistrationDate() <=> $m2->getLastRegistrationDate();});
 		$this->assertEquals(
-			array($this->members["2023-03-04"], $this->members["2023-09-08"], $this->members["2023-11-08"]),
-			$sut->apiMembersSortedByLastRegistrationDateGet(null, $this->responseCode, $this->responseHeaders));
+			array($this->members["2020-01-01"], $this->members["2023-03-04"], $this->members["2023-09-08"], $this->members["2023-11-08"]),
+			$actualMembers);
 	}
 
-	private function buildAndRegisterMember(MemberRepository $repo, string $event_date, string $first_name, string $last_name, string $email, $postal_code): void {
+	private function buildAndRegisterMember(MemberRepository $repo, string $event_date, string $first_name, string $last_name, string $email, string $postal_code, bool $isRegistrationUpToDate): void {
 		$event = $this->buildHelloassoEvent($event_date, $first_name, $last_name, $email, $postal_code);
 		$repo->addOrUpdateMember($event, false);
-		$this->members[$event_date] = $this->buildApiMembersSortedByLastRegistrationDateGet200ResponseInner($event);
+		$this->members[$event_date] = $this->buildApiMembersGet200ResponseInner($event, $isRegistrationUpToDate);
 	}
 
 	private int $autoIncrementedIdx = 0;
-	private function buildApiMembersSortedByLastRegistrationDateGet200ResponseInner(RegistrationEvent $event): ApiMembersSortedByLastRegistrationDateGet200ResponseInner {
+	private function buildApiMembersGet200ResponseInner(RegistrationEvent $event, bool $isRegistrationUpToDate): ApiMembersGet200ResponseInner {
 		$this->autoIncrementedIdx++;
-		$ret = new ApiMembersSortedByLastRegistrationDateGet200ResponseInner();
+		$ret = new ApiMembersGet200ResponseInner();
 
 		$ret->setUserId($this->autoIncrementedIdx);
 		$ret->setHelloAssoLastRegistrationEventId($event->helloasso_event_id);
@@ -88,6 +85,7 @@ class DefaultApiTest extends KernelTestCase {
 		$ret->setLastRegistrationDate(new \DateTime($event->event_date));
 		$ret->setAdditionalEmails(array());
 		$ret->setIsZWProfessional(false);
+		$ret->setIsRegistrationUpToDate($isRegistrationUpToDate);
 
 		return $ret;
 	}

@@ -116,16 +116,6 @@ class MemberRepository extends ServiceEntityRepository
 		}
 	}
 
-	public function getOrderedListOfLastRegistrations(\DateTime $since) : array {
-		return $this->createQueryBuilder('m')
-			->andWhere('m.lastRegistrationDate > :since')
-			->setParameter('since', $since)
-			->orderBy('m.lastRegistrationDate', 'ASC')
-			->getQuery()
-			->getResult();
-	}
-
-	// TODO: remove code duplicated with getOrderedListOfLastRegistrations
 	public function getListOfLastRegistrations(\DateTime $since): array {
 		return $this->createQueryBuilder('m')
 			->andWhere('m.lastRegistrationDate > :since')
