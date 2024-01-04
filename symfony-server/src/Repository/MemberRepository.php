@@ -138,17 +138,6 @@ class MemberRepository extends ServiceEntityRepository
 		return $this->getListOfLastRegistrations($this->dateUtil->getDateAfterWhichMembershipIsConsideredValid());
 	}
 
-	public function getMembersPerPostalCode(\DateTime $since) : array {
-		return $this->getEntityManager()->createQuery(
-				'SELECT m.postalCode, COUNT(m.postalCode) AS count
-				 FROM \App\Entity\Member m
-				 WHERE m.lastRegistrationDate > :since
-				 GROUP BY m.postalCode
-				 ORDER BY count DESC')
-			->setParameter('since', $since)
-			->getResult();
-	}
-
 	public function getListOfRegistrationsOlderThan(\DateTime $upTo) : array {
 		return $this->createQueryBuilder('m')
 			->andWhere('m.lastRegistrationDate < :upTo')

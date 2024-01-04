@@ -20,26 +20,6 @@ paths:
       responses:
         "204":
           description: OK
-  /api/members-per-postal-code:
-    get:
-      summary: "retrieve the list of members per postal code (nb: it's anonymized data)"
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  required:
-                    - postalCode
-                    - count
-                  properties:
-                    postalCode:
-                      type: string # Not an int because this data is regularly badly provided by the member during registration
-                    count:
-                      type: integer
   /api/slack-accounts-to-reactivate:
     get:
       summary: "Return the emails of members which have a deactivated slack (which likely need to be manually re-enabled)"

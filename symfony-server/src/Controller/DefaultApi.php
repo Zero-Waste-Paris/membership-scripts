@@ -20,7 +20,6 @@ namespace App\Controller;
 
 use OpenAPI\Server\Api\DefaultApiInterface;
 use OpenAPI\Server\Model\ApiMembersSortedByLastRegistrationDateGet200ResponseInner;
-use OpenAPI\Server\Model\ApiMembersPerPostalCodeGet200ResponseInner;
 use OpenAPI\Server\Model\ApiUpdateUserPasswordPostRequest;
 use OpenAPI\Server\Model\TimestampedSlackUserList;
 use App\Models\SlackMembersTimestamped;
@@ -78,15 +77,6 @@ class DefaultApi implements DefaultApiInterface {
 			$result []= new ApiMembersSortedByLastRegistrationDateGet200ResponseInner($data);
 		}
 
-		return $result;
-	}
-
-	public function apiMembersPerPostalCodeGet(int &$responseCode, array &$responseHeaders): array|object|null {
-		$since = $this->registrationDateUtil->getDateAfterWhichMembershipIsConsideredValid();
-		$result = array();
-		foreach($this->memberRepository->getMembersPerPostalCode($since) as $row) {
-			$result []= new ApiMembersPerPostalCodeGet200ResponseInner($row);
-		}
 		return $result;
 	}
 

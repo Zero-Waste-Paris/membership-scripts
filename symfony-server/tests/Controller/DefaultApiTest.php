@@ -15,7 +15,6 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 
 use OpenAPI\Server\Model\ApiMembersSortedByLastRegistrationDateGet200ResponseInner;
-use OpenAPI\Server\Model\ApiMembersPerPostalCodeGet200ResponseInner;
 use OpenAPI\Server\Model\ApiUpdateUserPasswordPostRequest;
 
 use Symfony\Bundle\SecurityBundle\Security;
@@ -68,16 +67,6 @@ class DefaultApiTest extends KernelTestCase {
 		$event = $this->buildHelloassoEvent($event_date, $first_name, $last_name, $email, $postal_code);
 		$repo->addOrUpdateMember($event, false);
 		$this->members[$event_date] = $this->buildApiMembersSortedByLastRegistrationDateGet200ResponseInner($event);
-	}
-
-	public function test_apiMembersPerPostalCodeGet(): void {
-		$sut = self::getContainer()->get(DefaultApi::class);
-
-		$this->assertEquals(array(
-					new ApiMembersPerPostalCodeGet200ResponseInner(["postalCode" => "92100", "count" => 2]),
-					new ApiMembersPerPostalCodeGet200ResponseInner(["postalCode" => "75018", "count" => 1]),
-		),
-		$sut->apiMembersPerPostalCodeGet($this->responseCode, $this->responseHeaders));
 	}
 
 	private int $autoIncrementedIdx = 0;
