@@ -105,8 +105,6 @@ class RegistrationDateUtil {
 	 * So when we call this method in 2020 it should tell us to delete registrations older than 2019-01-01
 	 */
 	public function getMaxDateBeforeWhichRegistrationsInfoShouldBeDiscarded(): \DateTime {
-		// TODO: this whole method could probably be replaced with getDateAfterWhichMembershipIsConsideredValid
-		//       but only after it takes into account the last week of December
 		return new \DateTime(($this->thisYear-1) . "-01-01", $this->timeZone);
 	}
 }
