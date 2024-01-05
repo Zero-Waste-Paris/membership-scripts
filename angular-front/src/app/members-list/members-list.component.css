@@ -2,6 +2,14 @@
 	background-color: #98FB98;
 }
 
+.row-member-up-to-date:hover {
+	background-color: #67FB67;
+}
+
 .row-member-outdated {
 	background-color: #FFCCCB;
+}
+
+.row-member-outdated:hover {
+	background-color: #FFBBBA;
 }
