@@ -34,7 +34,7 @@ final class MemberRepositoryTest extends KernelTestCase {
 		$sut->addOrUpdateMember($registrationAlice, $debug);
 
 		// Assert on added members
-		$members = $sut->getOrderedListOfLastRegistrations(new DateTime("1800-01-01"));
+		$members = $this->findAllSortedMembers($sut);
 		$this->assertEquals(2, count($members), "2 members have registered");
 		$this->assertExpectedMember($aliceRegistrationDate, $aliceRegistrationDate, "alice", "wonderland", "al@ice.com", $members[0]);
 		$this->assertExpectedMember($bobRegistrationDate, $bobRegistrationDate, "bob", "dylan", "bob@dylan.com", $members[1]);
@@ -47,14 +47,10 @@ final class MemberRepositoryTest extends KernelTestCase {
 		$sut->addOrUpdateMember($updateBob, $debug);
 
 		// Assert on bob's update
-		$members = $sut->getOrderedListOfLastRegistrations(new DateTime("1800-01-01"));
+		$members = $this->findAllSortedMembers($sut);
 		$this->assertEquals(2, count($members), "The last registration was an update, we should still have only 2 members");
 		$this->assertExpectedMember($aliceRegistrationDate, $aliceRegistrationDate, "alice", "wonderland", "al@ice.com", $members[0]);
 		$this->assertExpectedMember($bobRegistrationDate, $bobUpdateDate, "bob", "dylan", "bob@dylan.com", $members[1]);
-
-		// Leverage the setup to assert on getOrderedListOfLastRegistrations behavior
-		$members = $sut->getOrderedListOfLastRegistrations(new DateTime("1900-01-01"));
-		$this->assertEquals(1, count($members), "There should be a single registration after the 'since' date passed");
 	}
 
 	public function test_noUpdateIsPerformedIfTheRegistrationHandledLastIsOlderThanTheCurrentData() {
@@ -66,7 +62,7 @@ final class MemberRepositoryTest extends KernelTestCase {
 		$sut->addOrUpdateMember($registrationBob, $debug);
 
 		// // Precondition check
-		$members = $sut->getOrderedListOfLastRegistrations(new DateTime("1800-01-01"));
+		$members = $this->findAllSortedMembers($sut);
 		$this->assertExpectedMember($bobRegistrationDate, $bobRegistrationDate, "bob", "dylan", "bob@dylan.com", $members[0]);
 
 		// Act 1: add a previous registration
@@ -75,7 +71,7 @@ final class MemberRepositoryTest extends KernelTestCase {
 		$sut->addOrUpdateMember($otherRegistrationBob, $debug);
 
 		// Assert 1
-		$members = $sut->getOrderedListOfLastRegistrations(new DateTime("1800-01-01"));
+		$members = $this->findAllSortedMembers($sut);
 		$this->assertExpectedMember($bobPreviousRegistrationDate, $bobRegistrationDate, "bob", "dylan", "bob@dylan.com", $members[0]);
 
 		// Act 2: add a registration in between
@@ -84,7 +80,7 @@ final class MemberRepositoryTest extends KernelTestCase {
 		$sut->addOrUpdateMember($inBetweenRegistrationBob, $debug);
 
 		// Assert 2
-		$members = $sut->getOrderedListOfLastRegistrations(new DateTime("1800-01-01"));
+		$members = $this->findAllSortedMembers($sut);
 		$this->assertExpectedMember($bobPreviousRegistrationDate, $bobRegistrationDate, "bob", "dylan", "bob@dylan.com", $members[0]);
 	}
 
@@ -124,13 +120,13 @@ final class MemberRepositoryTest extends KernelTestCase {
 		$sut->addOrUpdateMember($registrationBob, $debug);
 		$sut->addOrUpdateMember($registrationAlice, $debug);
 
-		$this->assertEquals(2, count($sut->getOrderedListOfLastRegistrations(new DateTime("1800-01-01"))), "Pre-condition: we should have 2 registrations at this stage");
+		$this->assertEquals(2, count($sut->findAll()), "Pre-condition: we should have 2 registrations at this stage");
 
 		// Act
 		$sut->deleteMembersOlderThan(new DateTime("1900-01-01"), $debug);
 
 		// Assert
-		$this->assertEquals(1, count($sut->getOrderedListOfLastRegistrations(new DateTime("1800-01-01"))), "1 (and only 1) registration should have been deleted, leaving only 1");
+		$this->assertEquals(1, count($sut->findAll()), "1 (and only 1) registration should have been deleted, leaving only 1");
 	}
 
 	public function test_notificationHasBeenSentStatus() {
@@ -247,17 +243,17 @@ final class MemberRepositoryTest extends KernelTestCase {
 		$sut->addOrUpdateMember($registrationAlice, false);
 
 		// Act & Assert 1: can read
-		$this->assertEquals(2, count($sut->getOrderedListOfLastRegistrations(new DateTime("1800-01-01"))), "A debug connector should be able to read the existing members");
+		$this->assertEquals(2, count($sut->findAll()), "A debug connector should be able to read the existing members");
 
 		// Act & Assert 2: can't insert or update
 		$charlesRegistrationDate = "2020-09-08";
 		$registrationCharles = $this->buildHelloassoEvent($charlesRegistrationDate, "Charles", "Edouard", "charles@something.com");
 		$sut->addOrUpdateMember($registrationCharles, true);
-		$this->assertEquals(2, count($sut->getOrderedListOfLastRegistrations(new DateTime("1800-01-01"))), "We should still have only 2 members because the last one was not persisted to db because of debug mode");
+		$this->assertEquals(2, count($sut->findAll()), "We should still have only 2 members because the last one was not persisted to db because of debug mode");
 
 		// Act & Assert 3: can't delete
 		$sut->deleteMembersOlderThan(new DateTime("1900-01-01"), true);
-		$this->assertEquals(2, count($sut->getOrderedListOfLastRegistrations(new DateTime("1800-01-01"))), "We should still have only 2 members because we did not delete anything");
+		$this->assertEquals(2, count($sut->findAll()), "We should still have only 2 members because we did not delete anything");
 
 		// Act & Assert 4: can't update 'notification sent' status
 		$this->assertEquals(2, count($sut->getMembersForWhichNoNotificationHasBeenSentToAdmins()), "Precondition");
@@ -272,5 +268,11 @@ final class MemberRepositoryTest extends KernelTestCase {
 		$this->assertEquals($firstName, $actualMember->getFirstName());
 		$this->assertEquals($lastName, $actualMember->getLastName());
 		$this->assertEquals($email, $actualMember->getEmail());
+	}
+
+	private function findAllSortedMembers(MemberRepository $repo) {
+		$members = $repo->findAll();
+		usort($members, function(Member $m1, Member $m2){return $m1->getLastRegistrationDate() <=> $m2->getLastRegistrationDate();});
+		return $members;
 	}
 }

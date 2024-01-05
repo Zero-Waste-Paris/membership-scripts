@@ -11,9 +11,8 @@ final class RegistrationDateUtilTest extends TestCase {
 		$expected = new DateTime("2018-09-01T00:00:00", new DateTimeZone("Europe/Paris")); // According to current status
 
 		$this->assertCorrectValidMembershipDate($expected, new DateTime("2019-04-03Z"), "Usual case: membership is valid after January 1st");
-		$this->assertCorrectValidMembershipDate($expected, new DateTime("2020-01-03Z"), "Business rule: before 1st February we keep all those who registered during year N-1");
-		$this->assertCorrectValidMembershipDate($expected, new DateTime("2019-02-01T00:00:00", new DateTimeZone("Europe/Paris")), "Cornercase: we're at 1st February 00h00");
-		$this->assertCorrectValidMembershipDate($expected, new DateTime("2020-01-31T23:23:59", new DateTimeZone("Europe/Paris")), "Cornercase: we're 1s before 1st February");
+		$this->assertCorrectValidMembershipDate($expected, new DateTime("2019-01-01T00:00:00", new DateTimeZone("Europe/Paris")), "Cornercase: we're at 1st January 00h00");
+		$this->assertCorrectValidMembershipDate($expected, new DateTime("2019-12-31T23:23:59", new DateTimeZone("Europe/Paris")), "Cornercase: we're 1s before 1st January");
 	}
 
 	private function assertCorrectValidMembershipDate(DateTime $expected, DateTime $now, string $explanation): void{
