@@ -17,6 +17,7 @@
         "google/apiclient": "^2.15",
         "google/auth": "^1.28",
         "jolicode/slack-php-api": "^4.5",
+        "matomo/matomo-php-tracker": "^3.2",
         "nyholm/psr7": "*",
         "symfony/console": "6.3.*",
         "symfony/dotenv": "6.3.*",
