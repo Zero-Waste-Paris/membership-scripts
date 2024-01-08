@@ -21,10 +21,11 @@ class ApiLoginController extends AbstractController
 			$tracker->doTrackEvent('authent-missing-credentials');
 			return $this->json(['message' => 'missing credentials'], Response::HTTP_UNAUTHORIZED);
 		}
+		$identifier = $user->getUserIdentifier();
 		$response = $this->json([
-			'login' => $user->getUserIdentifier(),
+			'login' => $identifier,
 		]);
-		$tracker->doTrackEvent('authent-successful');
+		$tracker->doTrackEvent('authent-successful', hash("md5", $identifier));
 
 		$cookie = new Cookie('XSRF-TOKEN', $csrf->getToken('id'), strtotime('tomorrow'), null, null, null, false);
 		$response->headers->setCookie($cookie);

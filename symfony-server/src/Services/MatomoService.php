@@ -40,10 +40,10 @@ class MatomoService {
 		}
 	}
 
-	public function doTrackEvent(string $action) {
+	public function doTrackEvent(string $action, $name = false, $value = false) {
 		if ($this->tracker) {
 			$this->logger->info("tracking event $action");
-			$this->tracker->doTrackEvent("symfony-category", $action);
+			$this->tracker->doTrackEvent("symfony-category", $action, $name, $value);
 		}
 	}
 }
