@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { TimestampedSlackUserList } from '../generated/api/model/timestampedSlackUserList';
+import { DataProviderService } from '../data-provider.service';
 import { DefaultService } from '../generated/api/api/default.service';
 import { NgIf, NgFor } from '@angular/common';
 
@@ -15,18 +16,13 @@ export class SlackOutdatedComponent {
 	dataFreshnessAsString: string|null = null;
 
 	constructor(
-		apiClient: DefaultService,
+		dataProvider: DataProviderService,
 	) {
-		let obs = apiClient.apiSlackAccountsToDeactivateGet();
+		let promise = dataProvider.getSlackAccountToDeactivateData();
 		let self = this;
-		obs.subscribe({
-			next(data) {
-				self.data = data;
-				self.dataFreshnessAsString = new Date(data.timestamp*1000).toISOString();
-			},
-			error(err) {
-				console.log("failed to load slack accounts to deactivate: " + JSON.stringify(err));
-			}
+		promise.then(data => {
+			self.data = data;
+			self.dataFreshnessAsString = new Date(data.timestamp*1000).toISOString();
 		});
 	}
 }
