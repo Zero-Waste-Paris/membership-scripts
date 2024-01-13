@@ -1,0 +1,6 @@
+<div *ngIf="!membersLoaded">Chargement des membres en cours</div>
+
+<div *ngIf="membersLoaded">
+	<app-members-list [members]="members" ></app-members-list>
+</div>
+

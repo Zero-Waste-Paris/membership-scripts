@@ -8,13 +8,8 @@
 	<li (click)="logout()">Logout</li>
 </ul>
 
-<div *ngIf="this.page === 'members'">
-<div *ngIf="!membersLoaded; else membersTable">Chargement des membres en cours</div>
 
-<ng-template #membersTable>
-	<app-members-list [members]="members" ></app-members-list>
-</ng-template>
-</div>
+<app-members-list-page *ngIf="this.page === 'members'"></app-members-list-page>
 
 <app-password-changer *ngIf="this.page === 'account'" (passwordChangedSuccessfully)="passwordChangedSuccessfullyEventReceived()"></app-password-changer>
 
