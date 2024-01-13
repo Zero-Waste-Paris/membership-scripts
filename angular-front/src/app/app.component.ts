@@ -41,14 +41,10 @@ export class AppComponent {
 		this.page = page;
 	}
 
-	fetchMembers() {
-		let promise = this.dataProvider.getApiMembers();
-		let self = this;
-		promise.then(members => {
-				console.log("got " + members.length + " members");
-				self.members = members.reverse();
-				self.membersLoaded = true;
-		});
+	async fetchMembers() {
+		this.members = (await this.dataProvider.getApiMembers()).reverse();
+		this.membersLoaded = true;
+		console.log("got " + this.members.length + " members");
 	}
 
 	logout() {
