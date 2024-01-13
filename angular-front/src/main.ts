@@ -11,7 +11,7 @@ import { withInterceptorsFromDi, provideHttpClient } from '@angular/common/http'
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, RouterModule, Routes } from '@angular/router';
-import { MembersListComponent } from './app/members-list/members-list.component';
+import { MembersListPageComponent } from './app/members-list-page/members-list-page.component';
 import { PasswordChangerComponent } from './app/password-changer/password-changer.component';
 import { SlackOutdatedComponent } from './app/slack-outdated/slack-outdated.component';
 
@@ -30,7 +30,7 @@ function buildClientsConfigParameters() {
 }
 
 const routes: Routes = [
-	{ path: '', component: MembersListComponent },
+	{ path: '', component: MembersListPageComponent },
 	{ path: 'account', component: PasswordChangerComponent },
 	{ path: 'unknown-slack-accounts', component: SlackOutdatedComponent },
 ]

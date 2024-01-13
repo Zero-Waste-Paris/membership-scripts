@@ -3,20 +3,12 @@
 <ng-template #isLoggedIn>
 <nav>
 	<ul class="menu">
-		<li><a routerLink="/" routerLinkActive="active" ariaCurrentWhenActive="page">Membres</a></li>
-		<li><a routerLink="/account" routerLinkActive="active" ariaCurrentWhenActive="page">Compte</a></li>
-		<li><a routerLink="/unknown-slack-accounts" routerLinkActive="active" ariaCurrentWhenActive="page">Comptes Slack à désactiver</a></li>
+		<li routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/" ariaCurrentWhenActive="page">Membres</a></li>
+		<li routerLinkActive="active"><a routerLink="/account" ariaCurrentWhenActive="page">Compte</a></li>
+		<li routerLinkActive="active"><a routerLink="/unknown-slack-accounts" ariaCurrentWhenActive="page">Comptes Slack à désactiver</a></li>
 		<li><a (click)="logout()">Logout</a></li>
 	</ul>
 </nav>
 
 <router-outlet></router-outlet>
-
-
-<app-members-list-page *ngIf="this.page === 'members'"></app-members-list-page>
-
-<app-password-changer *ngIf="this.page === 'account'" (passwordChangedSuccessfully)="passwordChangedSuccessfullyEventReceived()"></app-password-changer>
-
-<app-slack-outdated *ngIf="this.page === 'slack-outdated'"></app-slack-outdated>
-
 </ng-template>
