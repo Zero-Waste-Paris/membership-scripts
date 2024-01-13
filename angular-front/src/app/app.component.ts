@@ -47,8 +47,4 @@ export class AppComponent {
 			}
 		});
 	}
-
-	passwordChangedSuccessfullyEventReceived() {
-		this.page = "members";
-	}
 }
