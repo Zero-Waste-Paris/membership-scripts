@@ -1,12 +1,16 @@
 <app-login *ngIf="!loggedIn; else isLoggedIn" (loginSuccessful)="loginInitializedEventReceived()"></app-login>
 
 <ng-template #isLoggedIn>
-<ul class="menu">
-	<li (click)="setPage('members')" [ngClass]="{'active': this.page === 'members'}">Membres</li>
-	<li (click)="setPage('account')" [ngClass]="{'active': this.page === 'account'}">Compte</li>
-	<li (click)="setPage('slack-outdated')" [ngClass]="{'active': this.page === 'slack-outdated'}">Comptes Slack à désactiver</li>
-	<li (click)="logout()">Logout</li>
-</ul>
+<nav>
+	<ul class="menu">
+		<li><a routerLink="/" routerLinkActive="active" ariaCurrentWhenActive="page">Membres</a></li>
+		<li><a routerLink="/account" routerLinkActive="active" ariaCurrentWhenActive="page">Compte</a></li>
+		<li><a routerLink="/unknown-slack-accounts" routerLinkActive="active" ariaCurrentWhenActive="page">Comptes Slack à désactiver</a></li>
+		<li><a (click)="logout()">Logout</a></li>
+	</ul>
+</nav>
+
+<router-outlet></router-outlet>
 
 
 <app-members-list-page *ngIf="this.page === 'members'"></app-members-list-page>
