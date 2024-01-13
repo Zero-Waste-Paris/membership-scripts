@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { DataProviderService } from './data-provider.service';
 import { DefaultService } from './generated/api/api/default.service';
 import { DefaultLoginService } from './generated/login/api/default.service';
 import { LoginPostRequest} from './generated/login/model/loginPostRequest';
@@ -26,7 +27,7 @@ export class AppComponent {
 	members: Array<ApiMembersGet200ResponseInner> = [];
 
 	constructor(
-		private apiClient: DefaultService,
+		private dataProvider: DataProviderService,
 		private loginClient: DefaultLoginService,
 	) {}
 
@@ -41,19 +42,13 @@ export class AppComponent {
 	}
 
 	fetchMembers() {
-		let obs: Observable<Array<ApiMembersGet200ResponseInner>> = this.apiClient.apiMembersGet();
+		let promise = this.dataProvider.getApiMembers();
 		let self = this;
-		obs.subscribe({
-			next(members) {
+		promise.then(members => {
 				console.log("got " + members.length + " members");
 				self.members = members.reverse();
 				self.membersLoaded = true;
-			},
-			error(err) {
-				console.log("failed to get members: " + JSON.stringify(err));
-			}
 		});
-
 	}
 
 	logout() {
