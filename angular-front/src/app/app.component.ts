@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { DataProviderService } from './data-provider.service';
 import { DefaultService } from './generated/api/api/default.service';
 import { DefaultLoginService } from './generated/login/api/default.service';
 import { LoginPostRequest} from './generated/login/model/loginPostRequest';
@@ -24,6 +25,7 @@ export class AppComponent {
 
 	constructor(
 		private loginClient: DefaultLoginService,
+		private dataProvider: DataProviderService,
 	) {}
 
 
@@ -44,6 +46,7 @@ export class AppComponent {
 				console.log("logout successful");
 				self.loggedIn = false;
 				self.logoutInProgress = false;
+				self.dataProvider.clearData();
 			},
 			error(err) {
 				self.logoutInProgress = false;

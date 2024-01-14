@@ -39,7 +39,12 @@ export class DataProviderService {
 			console.log("failed to load members: " + JSON.stringify(err));
 			throw err;
 		}
+	}
 
+	clearData(): void {
+		console.log("clearing data");
+		this.slackAccountsToDeactivate = null;
+		this.members = null;
 	}
 
 }
