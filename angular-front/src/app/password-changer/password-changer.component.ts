@@ -1,8 +1,9 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { DefaultService } from '../generated/api/api/default.service';
 import { ApiUpdateUserPasswordPostRequest } from '../generated/api/model/apiUpdateUserPasswordPostRequest';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-password-changer',
@@ -12,7 +13,6 @@ import { ApiUpdateUserPasswordPostRequest } from '../generated/api/model/apiUpda
 	imports: [FormsModule, ReactiveFormsModule]
 })
 export class PasswordChangerComponent {
-	@Output() passwordChangedSuccessfully = new EventEmitter();
 	newPasswordSubmitted = false;
 
 	newPasswordForm = this.formBuilder.group({
@@ -22,7 +22,8 @@ export class PasswordChangerComponent {
 
 	constructor(
 		private apiClient: DefaultService,
-		private formBuilder: FormBuilder
+		private formBuilder: FormBuilder,
+		private router: Router,
 	) {}
 
 	onSubmit(): void {
@@ -38,7 +39,7 @@ export class PasswordChangerComponent {
 		obs.subscribe({
 			next() {
 				console.log("password successfully updated");
-				self.passwordChangedSuccessfully.emit();
+				self.router.navigate(['']);
 			},
 			error(err) {
 				self.newPasswordSubmitted = false;

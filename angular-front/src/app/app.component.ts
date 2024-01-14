@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { DataProviderService } from './data-provider.service';
 import { DefaultService } from './generated/api/api/default.service';
 import { DefaultLoginService } from './generated/login/api/default.service';
+import { RouterModule } from '@angular/router';
 import { LoginPostRequest} from './generated/login/model/loginPostRequest';
 import { User } from './generated/login/model/user';
 import { Observable } from 'rxjs';
@@ -16,12 +17,11 @@ import { NgIf, NgClass } from '@angular/common';
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.css'],
 	standalone: true,
-	imports: [NgIf, LoginComponent, NgClass, PasswordChangerComponent, MembersListPageComponent, SlackOutdatedComponent]
+	imports: [NgIf, LoginComponent, NgClass, PasswordChangerComponent, MembersListPageComponent, RouterModule, SlackOutdatedComponent]
 })
 export class AppComponent {
 	loggedIn = false; // TODO: also get the name somehow?
 	logoutInProgress = false;
-	page = "members";
 
 	constructor(
 		private loginClient: DefaultLoginService,
@@ -31,10 +31,6 @@ export class AppComponent {
 
 	loginInitializedEventReceived() {
 		this.loggedIn = true;
-	}
-
-	setPage(page: string): void {
-		this.page = page;
 	}
 
 	logout() {
@@ -53,9 +49,5 @@ export class AppComponent {
 				console.log("Failed to logout: " + JSON.stringify(err));
 			}
 		});
-	}
-
-	passwordChangedSuccessfullyEventReceived() {
-		this.page = "members";
 	}
 }

@@ -10,6 +10,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { withInterceptorsFromDi, provideHttpClient } from '@angular/common/http';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideRouter, RouterModule, Routes } from '@angular/router';
+import { MembersListPageComponent } from './app/members-list-page/members-list-page.component';
+import { PasswordChangerComponent } from './app/password-changer/password-changer.component';
+import { SlackOutdatedComponent } from './app/slack-outdated/slack-outdated.component';
 
 function clientConfigFactory(): Configuration {
 	return new Configuration(buildClientsConfigParameters());
@@ -25,11 +29,18 @@ function buildClientsConfigParameters() {
 	}
 }
 
+const routes: Routes = [
+	{ path: '', component: MembersListPageComponent },
+	{ path: 'account', component: PasswordChangerComponent },
+	{ path: 'unknown-slack-accounts', component: SlackOutdatedComponent },
+]
+
 bootstrapApplication(AppComponent, {
 	providers: [
-    importProvidersFrom(BrowserModule, FormsModule, ReactiveFormsModule, ApiModule.forRoot(clientConfigFactory), LoginApiModule.forRoot(loginClientConfigFactory)),
-    provideHttpClient(withInterceptorsFromDi()),
-    provideAnimations()
+		importProvidersFrom(BrowserModule, FormsModule, ReactiveFormsModule, ApiModule.forRoot(clientConfigFactory), LoginApiModule.forRoot(loginClientConfigFactory)),
+		provideHttpClient(withInterceptorsFromDi()),
+		provideAnimations(),
+		provideRouter(routes),
 ]
 })
 	.catch(err => console.error(err));
