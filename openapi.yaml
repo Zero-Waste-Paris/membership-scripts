@@ -29,7 +29,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/timestampedSlackUserList'
+                $ref: '#/components/schemas/TimestampedSlackUserList'
   /api/slack-accounts-to-deactivate:
     get:
       summary: "Return the email that match an active Slack account but not an up to date member"
@@ -39,7 +39,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/timestampedSlackUserList'
+                $ref: '#/components/schemas/TimestampedSlackUserList'
   /api/update-user-password:
     post:
       summary: "Make it possible for a user to change his or her password"
@@ -127,7 +127,7 @@ paths:
                       type: boolean
 components:
   schemas:
-    timestampedSlackUserList:
+    TimestampedSlackUserList:
       type: object
       required:
         - isFresh
