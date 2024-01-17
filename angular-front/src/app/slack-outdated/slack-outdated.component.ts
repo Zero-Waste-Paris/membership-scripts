@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { TimestampedSlackUserListWithUserUpdatedTimestamp } from '../generated/api/model/timestampedSlackUserListWithUserUpdatedTimestamp';
 import { DataProviderService } from '../data-provider.service';
 import { DefaultService } from '../generated/api/api/default.service';
-import { NgIf, NgFor } from '@angular/common';
+import { NgIf, NgFor, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-slack-outdated',
   standalone: true,
-  imports: [NgIf, NgFor],
+  imports: [NgIf, NgFor, DatePipe],
   templateUrl: './slack-outdated.component.html',
   styleUrl: './slack-outdated.component.css'
 })

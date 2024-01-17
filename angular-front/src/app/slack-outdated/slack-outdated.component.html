@@ -4,7 +4,7 @@
 	<span *ngIf="!data.isFresh" class="warning">Utilisation de données en cache datant de {{this.dataFreshnessAsString}}</span>
 
 	<ul>
-		<li *ngFor="let member of this.data.members">{{member.email}} - {{member.updated}}</li>
+		<li *ngFor="let member of this.data.members">{{member.email}} - {{member.updated*1000 | date}}</li>
 	</ul>
 </div>
 
