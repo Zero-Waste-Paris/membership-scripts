@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TimestampedSlackUserList } from '../generated/api/model/timestampedSlackUserList';
+import { TimestampedSlackUserListWithUserUpdatedTimestamp } from '../generated/api/model/timestampedSlackUserListWithUserUpdatedTimestamp';
 import { DataProviderService } from '../data-provider.service';
 import { DefaultService } from '../generated/api/api/default.service';
 import { NgIf, NgFor } from '@angular/common';
@@ -12,7 +12,7 @@ import { NgIf, NgFor } from '@angular/common';
   styleUrl: './slack-outdated.component.css'
 })
 export class SlackOutdatedComponent {
-	data: TimestampedSlackUserList|null = null;
+	data: TimestampedSlackUserListWithUserUpdatedTimestamp|null = null;
 	dataFreshnessAsString: string|null = null;
 
 	constructor(

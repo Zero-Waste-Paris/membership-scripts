@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
 import { DefaultService } from './generated/api/api/default.service';
 import { Observable, lastValueFrom } from 'rxjs';
-import { TimestampedSlackUserList } from './generated/api/model/timestampedSlackUserList';
+import { TimestampedSlackUserListWithUserUpdatedTimestamp } from './generated/api/model/timestampedSlackUserListWithUserUpdatedTimestamp';
 import { ApiMembersGet200ResponseInner } from './generated/api/model/apiMembersGet200ResponseInner';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class DataProviderService {
-	slackAccountsToDeactivate: Promise<TimestampedSlackUserList>|null = null;
+	slackAccountsToDeactivate: Promise<TimestampedSlackUserListWithUserUpdatedTimestamp>|null = null;
 	members: Promise<Array<ApiMembersGet200ResponseInner>>|null = null;
 
 	constructor(
 		private apiClient: DefaultService,
 	) {}
 
-	async getSlackAccountToDeactivateData(): Promise<TimestampedSlackUserList> {
+	async getSlackAccountToDeactivateData(): Promise<TimestampedSlackUserListWithUserUpdatedTimestamp> {
 		if (!this.slackAccountsToDeactivate) {
 			this.slackAccountsToDeactivate = lastValueFrom(this.apiClient.apiSlackAccountsToDeactivateGet());
 		}

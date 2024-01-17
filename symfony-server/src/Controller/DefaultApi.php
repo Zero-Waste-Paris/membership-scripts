@@ -22,11 +22,15 @@ use OpenAPI\Server\Api\DefaultApiInterface;
 use OpenAPI\Server\Model\ApiMembersGet200ResponseInner;
 use OpenAPI\Server\Model\ApiUpdateUserPasswordPostRequest;
 use OpenAPI\Server\Model\TimestampedSlackUserList;
+use OpenAPI\Server\Model\TimestampedSlackUserListMembersInner;
+use OpenAPI\Server\Model\TimestampedSlackUserListWithUserUpdatedTimestamp;
+use OpenAPI\Server\Model\TimestampedSlackUserListWithUserUpdatedTimestampAllOfMembers;
 use App\Models\SlackMembersTimestamped;
 use App\Services\RegistrationDateUtil;
 use App\Services\MemberImporter;
 use App\Services\SlackService;
 use App\Repository\UserRepository;
+use JoliCode\Slack\Api\Model\ObjsUser;
 
 use App\Repository\MemberRepository;
 use App\Entity\Member;
@@ -95,14 +99,34 @@ class DefaultApi implements DefaultApiInterface {
 
 	public function apiSlackAccountsToDeactivateGet(int &$responseCode, array &$responseHeaders): array|object|null {
 		$data = $this->slackService->findUsersToDeactivate();
-		return $this->toTimestampedSlackUserList($data);
+		return $this->toTimestampedSlackUserListWithUserUpdatedTimestamp($data);
 	}
 
-	private function toTimestampedSlackUserList(SlackMembersTimestamped $data) {
+	private function toTimestampedSlackUserList(SlackMembersTimestamped $data): TimestampedSlackUserList {
 		$res = new TimestampedSlackUserList();
-		$res->setMembers($data->getMembers());
+		$res->setMembers(array_map(function(ObjsUser $member) { return $this->toTimestampedSlackUserListMembersInner($member);}, $data->getMembers()));
 		$res->setIsFresh($data->isFresh());
 		$res->setTimestamp($data->getTimestamp());
+		return $res;
+	}
+
+	private function toTimestampedSlackUserListMembersInner(ObjsUser $slackMember): TimestampedSlackUserListMembersInner {
+		$res = new TimestampedSlackUserListMembersInner();
+		$res->setEmail(SlackService::extractUserEmail($slackMember));
+		return $res;
+	}
+
+	private function toTimestampedSlackUserListWithUserUpdatedTimestamp(SlackMembersTimestamped $data): TimestampedSlackUserListWithUserUpdatedTimestamp {
+		$res = new TimestampedSlackUserListWithUserUpdatedTimestamp();
+		$res->setMembers(array_map(function(ObjsUser $member) { return $this->toTimestampedSlackUserListWithUserUpdatedTimestampAllOfMembers($member);}, $data->getMembers()));
+		$res->setIsFresh($data->isFresh());
+		$res->setTimestamp($data->getTimestamp());
+		return $res;
+	}
+	private function toTimestampedSlackUserListWithUserUpdatedTimestampAllOfMembers(ObjsUser $slackMember): TimestampedSlackUserListWithUserUpdatedTimestampAllOfMembers {
+		$res = new TimestampedSlackUserListWithUserUpdatedTimestampAllOfMembers();
+		$res->setEmail(SlackService::extractUserEmail($slackMember));
+		$res->setUpdated($slackMember->getUpdated());
 		return $res;
 	}
 

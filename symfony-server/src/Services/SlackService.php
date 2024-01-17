@@ -76,7 +76,7 @@ class SlackService {
 		$emailsOfDeactivatedSlackUsers = array();
 		foreach($allSlackUsers->getMembers()  as $slackUser) {
 			if ($slackUser->getDeleted()) {
-				$slackEmail = $this->extractUserEmail($slackUser);
+				$slackEmail = self::extractUserEmail($slackUser);
 				if ($slackEmail !== null) {
 					$emailsOfDeactivatedSlackUsers []= $slackEmail;
 				}
@@ -96,19 +96,27 @@ class SlackService {
 	public function findUsersToDeactivate(): SlackMembersTimestamped {
 		$membersEmail = array_map(function($email) {return strtolower($email);}, $this->getEmailOfAllUpToDateMembers());
 		$allSlackUsers = $this->usersList();
-		$allActiveSlackUsers = array_filter($allSlackUsers->getMembers(), function($objUser) {return !$objUser->getDeleted();});
-		$allSlackUsersEmail = array_filter(array_map(function($objUser) {return $this->extractUserEmail($objUser);}, $allActiveSlackUsers));
-		$allLowerCasedSlackUsersEmail = array_map(function($email) {return strtolower($email);}, $allSlackUsersEmail);
 
-		$emailOfNonMembers = array_diff($allLowerCasedSlackUsersEmail, $membersEmail);
 		return new SlackMembersTimestamped(
 			$allSlackUsers->getTimestamp(),
-			array_filter($emailOfNonMembers, function($email) {return explode('@', $email)[1] !== $this->allowListedDomain;}),
+			array_filter($allSlackUsers->getMembers(), function($slackUser) use($membersEmail) {return $this->isUserToDeactivate($slackUser, $membersEmail);}),
 			$allSlackUsers->isFresh()
 		);
 	}
 
-	private function extractUserEmail(ObjsUser $user): ?string {
+	private function isUserToDeactivate($slackUser, array $lowerCasedEmailOfAllMembers) : bool {
+			if ($slackUser->getDeleted()) { return false; } // deleted user don't need to be deactivated
+
+			$email = self::extractUserEmail($slackUser);
+			if (is_null($email)) { return false; }
+			if (explode('@', $email)[1] === $this->allowListedDomain) { return false; } // don't delete our special members (employees, ...)
+
+			if (in_array(strtolower($email), $lowerCasedEmailOfAllMembers)) { return false; } // don't delete up to date members
+
+			return true;
+	}
+
+	public static function extractUserEmail(ObjsUser $user): ?string {
 		$profile = $user->getProfile(); // ObjsUserProfile
 		if ($profile != null) { // Not sure if it's possible that it's null but better safe than sorry
 			return $profile->getEmail(); // Note that it may be null for some app

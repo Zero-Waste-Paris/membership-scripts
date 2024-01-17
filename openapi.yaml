@@ -39,7 +39,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TimestampedSlackUserList'
+                $ref: '#/components/schemas/TimestampedSlackUserListWithUserUpdatedTimestamp'
   /api/update-user-password:
     post:
       summary: "Make it possible for a user to change his or her password"
@@ -127,19 +127,45 @@ paths:
                       type: boolean
 components:
   schemas:
-    TimestampedSlackUserList:
+    CacheMetadata:
       type: object
       required:
         - isFresh
         - timestamp
-        - members
       properties:
         isFresh:
           type: boolean
         timestamp:
           type: integer
-        members:
-          type: array
-          items:
-            type: string
-            format: email
+    TimestampedSlackUserList:
+      allOf:
+        - $ref: '#/components/schemas/CacheMetadata'
+        - type: object
+          required:
+            - members
+          properties:
+            members:
+              type: array
+              items:
+                type: string
+                format: email
+    TimestampedSlackUserListWithUserUpdatedTimestamp:
+      allOf:
+        - $ref: '#/components/schemas/CacheMetadata'
+        - type: object
+          required:
+            - members
+          properties:
+            members:
+              type: array
+              items:
+                type: object
+                required:
+                  - email
+                  - updated
+                properties:
+                  email:
+                    type: string
+                    format: email
+                  updated:
+                    type: integer
