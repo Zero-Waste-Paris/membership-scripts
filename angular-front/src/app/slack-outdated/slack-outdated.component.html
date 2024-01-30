@@ -3,7 +3,8 @@
 <div *ngIf="data">
 	<span *ngIf="!data.isFresh" class="warning">Utilisation de données en cache datant de {{this.data.timestamp*1000 | date:'y-MM-ddThh:mm:ssZZZZZ'}}</span>
 
-	<ul>
+	<span *ngIf="!data.members || data.members.length == 0">A jour</span>
+	<ul *ngIf="data.members && data.members.length > 0">
 		<li *ngFor="let member of this.data.members">{{member}}</li>
 	</ul>
 </div>
