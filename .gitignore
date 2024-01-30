@@ -20,6 +20,7 @@ generated
 bin
 symfony-server/public/assets
 *.map
+.gradle
 
 # temporary release directory
 temp_for_release
