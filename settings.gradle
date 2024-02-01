@@ -1,3 +1,4 @@
 rootProject.name = 'membership-scripts'
 
 include('symfony-server')
+include('scripts')

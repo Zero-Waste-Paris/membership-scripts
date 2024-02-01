@@ -1,0 +1,5 @@
+task generateSources(type: Exec) {
+	group "build"
+	description "Generate sources from OpenApi contract"
+	commandLine './generate.sh'
+}
