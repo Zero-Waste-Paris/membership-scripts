@@ -1,5 +1,25 @@
-task generateSources(type: Exec) {
-	group "build"
-	description "Generate sources from OpenApi contract"
-	commandLine './generate.sh'
+plugins {
+	id "de.undercouch.download" version "5.5.0"
 }
+
+ext {
+	openApiGeneratorVersion = "7.0.0"
+	openApiGeneratorLocalDir = "bin"
+}
+
+task downloadOpenApiGenerator(type: Download) {
+	group "build"
+	description "downloads OpenApiGenerator binary"
+	src "https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/${openApiGeneratorVersion}/openapi-generator-cli-${openApiGeneratorVersion}.jar" 
+		dest openApiGeneratorLocalDir
+		overwrite false
+}
+
+// task generateSymfonyBundle: TODO
+// task generateAngularModule: TODO
+
+//task generateSources(type: Exec) {
+//	group "build"
+//	description "Generate sources from OpenApi contract"
+//	commandLine './generate.sh'
+//}
