@@ -2,10 +2,6 @@ plugins {
 	id("org.openapi.generator") version "7.0.0"
 }
 
-//ext {
-//	openApiGeneratorLocalDir = "bin"
-//}
-//
 task generateSymfonyBundle(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
 	group "OpenAPI Tools"
 	description "Generate the Symfony bundle from the OpenApi specification file"
@@ -15,31 +11,33 @@ task generateSymfonyBundle(type: org.openapitools.generator.gradle.plugin.tasks.
 	gitUserId = "zero-waste-paris"
 	gitRepoId = "membership-scipts"
 
-	// TODO: check if those options are enough (ie: whether the generated Tests files are ok
-	// or whether we should still remove outputDir/Tests
 	generateModelTests = false
 	generateModelDocumentation = false
 	generateApiTests = false
 	generateApiDocumentation = false
 }
 
+task generateAngularApiModule(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+	group "OpenAPI Tools"
+	description "Generate the API Angular bundle from the OpenApi specification file"
+	generatorName = "typescript-angular"
+	outputDir = "$rootDir/angular-front/src/app/generated/api"
+	inputSpec = "$rootDir/openapi.yaml"
+}
 
-//	inputSpec.set("$rootDir/petstore-v3.0.yaml")
-//}
-//
-//task downloadOpenApiGenerator(type: Download) {
-//	group "build"
-//	description "downloads OpenApiGenerator binary"
-//	src "https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/${openApiGeneratorVersion}/openapi-generator-cli-${openApiGeneratorVersion}.jar" 
-//		dest openApiGeneratorLocalDir
-//		overwrite false
-//}
+task generateAngularLoginModule(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+	group "OpenAPI Tools"
+	description "Generate the API Angular login bundle from the OpenApi specification file"
+	generatorName = "typescript-angular"
+	outputDir = "$rootDir/angular-front/src/app/generated/login"
+	inputSpec = "$rootDir/openapi-login.yaml"
+	additionalProperties = [
+		apiModulePrefix: "Login",
+		serviceSuffix: "LoginService"
+	]
+}
 
-// task generateSymfonyBundle: TODO
-// task generateAngularModule: TODO
-
-//task generateSources(type: Exec) {
-//	group "build"
-//	description "Generate sources from OpenApi contract"
-//	commandLine './generate.sh'
-//}
+task generateSources(dependsOn: ['generateSymfonyBundle', 'generateAngularApiModule', 'generateAngularLoginModule']) {
+	group "OpenAPI Tools"
+	description "Generate all sources"
+}
