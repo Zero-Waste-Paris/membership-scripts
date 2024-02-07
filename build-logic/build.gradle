@@ -33,33 +33,49 @@ fileTree(configsDir).matching(new PatternSet().setIncludes(["*-config"])).visit 
 	}
 }
 
-tasks.register("checkGitRepoClean") {
-	// TODO
+task checkGitRepoClean(type: Exec) {
+	commandLine "git", "status", "--porcelain"
+	standardOutput = new ByteArrayOutputStream()
+
 	doLast {
-	def proceed = false
-	new SwingBuilder().edt {
-          dialog(modal: true,
-                  title: 'Proceed?',
-                  alwaysOnTop: true,
-                  resizable: false,
-                  locationRelativeTo: null,
-                  pack: true,
-                  show: true
-          ) {
-              vbox {
-                  label(text: "Proceed nevertheless?")
-                  button(defaultButton: false, text: 'NO', actionPerformed: {
-											proceed = false;
-                      dispose();
-                  })
-                  button(defaultButton: true, text: 'yes', actionPerformed: {
-                      proceed = true;
-                      dispose();
-                  })
-              }
-          }
-      }
-	System.out.println("Got: ${proceed}")
+		def statusOutput = standardOutput.toString()
+		if (statusOutput == "") {
+			println("git repo clean")
+		} else {
+			println("git repo NOT clean:")
+			println(statusOutput)
+
+			def proceed = false
+			new SwingBuilder().edt {
+				dialog(modal: true,
+					title: 'Proceed?',
+					alwaysOnTop: true,
+					resizable: false,
+					locationRelativeTo: null,
+					pack: true,
+					show: true
+				) {
+					vbox {
+						label(text: "Repo not clean:\n\n${statusOutput}\n\nProceed nevertheless?")
+						hbox {
+							button(defaultButton: false, text: 'NO', actionPerformed: {
+								proceed = false;
+								dispose();
+							})
+							button(defaultButton: true, text: 'yes', actionPerformed: {
+								proceed = true;
+								dispose();
+							})
+						}
+					}
+				}
+			}
+
+			if (!proceed) {
+				throw new Exception("The repo is not clean and the user prefered to abort")
+			}
+			println("Proceeding nevertheless")
+		}
 	}
 }
 
