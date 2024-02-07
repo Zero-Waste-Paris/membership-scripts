@@ -44,34 +44,12 @@ task checkGitRepoClean(type: Exec) {
 		} else {
 			println("git repo NOT clean:")
 			println(statusOutput)
+			println("proceed anyway? [yN]:")
 
-			def proceed = false
-			new SwingBuilder().edt {
-				dialog(modal: true,
-					title: 'Proceed?',
-					alwaysOnTop: true,
-					resizable: false,
-					locationRelativeTo: null,
-					pack: true,
-					show: true
-				) {
-					vbox {
-						label(text: "Repo not clean:\n\n${statusOutput}\n\nProceed nevertheless?")
-						hbox {
-							button(defaultButton: false, text: 'NO', actionPerformed: {
-								proceed = false;
-								dispose();
-							})
-							button(defaultButton: true, text: 'yes', actionPerformed: {
-								proceed = true;
-								dispose();
-							})
-						}
-					}
-				}
-			}
+			def console = System.console()
+			def input = (console) ? console.readLine().trim() : new Scanner(System.in).nextLine().trim()
 
-			if (!proceed) {
+			if (input != "y") {
 				throw new Exception("The repo is not clean and the user prefered to abort")
 			}
 			println("Proceeding nevertheless")
