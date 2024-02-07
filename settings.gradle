@@ -1,4 +1,5 @@
 rootProject.name = 'membership-scripts'
 
 include('symfony-server')
-include('scripts')
+include('build-logic')
+include('build-logic:generateSources')

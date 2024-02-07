@@ -1,0 +1,72 @@
+import groovy.swing.SwingBuilder
+
+def assertFileExists(String file) {
+	if ( ! new File(file).exists()) {
+		def msg = "File ${file} is needed but is missing. Setup may not be completed. See README for more info"
+		System.err.println(msg)
+		throw new Exception(msg)
+	}
+}
+
+def configsDir = "$rootDir/scripts/"
+
+fileTree(configsDir).matching(new PatternSet().setIncludes(["*-config"])).visit { // TODO: this recurses which is pointless: it would be more efficient to have a way to look only for directories at the top level
+	def dirName = it.file.name
+	def configPath = configsDir + dirName
+	def slackConfigPath = configPath + "/slack-config"
+	def localConfFile = configPath + "/deploysymfony-config.sh"
+	def deploymentEnvironment = dirName.substring(0, dirName.length() - "-config".length())
+
+	tasks.register("deployTo${deploymentEnvironment}") {
+		doLast {
+			println "Going to deploy to ${deploymentEnvironment}"
+		}
+	}
+
+	tasks.register("assert${deploymentEnvironment}FilesExist") {
+		doLast {
+			assertFileExists(configPath + "/htaccess")
+			assertFileExists(configPath + "/symfony.conf")
+			assertFileExists(slackConfigPath + "/config.json")
+			assertFileExists(localConfFile)
+		}
+	}
+}
+
+tasks.register("checkGitRepoClean") {
+	// TODO
+	doLast {
+	def proceed = false
+	new SwingBuilder().edt {
+          dialog(modal: true,
+                  title: 'Proceed?',
+                  alwaysOnTop: true,
+                  resizable: false,
+                  locationRelativeTo: null,
+                  pack: true,
+                  show: true
+          ) {
+              vbox {
+                  label(text: "Proceed nevertheless?")
+                  button(defaultButton: false, text: 'NO', actionPerformed: {
+											proceed = false;
+                      dispose();
+                  })
+                  button(defaultButton: true, text: 'yes', actionPerformed: {
+                      proceed = true;
+                      dispose();
+                  })
+              }
+          }
+      }
+	System.out.println("Got: ${proceed}")
+	}
+}
+
+//fileTree("$rootDir/scripts/").matching(new PatternSet().setIncludes(["*-config"])).visit {	FileVisitDetails details ->
+//    println details.file.path
+//}
+
+//fileTree("$rootDir/scripts/").visit {	FileVisitDetails details ->
+//    println details.file.path
+//}
