@@ -10,14 +10,25 @@ def assertFileExists(String file) {
 
 def configsDir = "$rootDir/scripts/"
 
+ext {
+	symfonyDir = "$rootDir/symfony-server"
+	symfonyConsole = "$symfonyDir/bin/console"
+}
+
 fileTree(configsDir).matching(new PatternSet().setIncludes(["*-config"])).visit { // TODO: this recurses which is pointless: it would be more efficient to have a way to look only for directories at the top level
 	def dirName = it.file.name
 	def configPath = configsDir + dirName
 	def slackConfigPath = configPath + "/slack-config"
 	def localConfFile = configPath + "/deploysymfony-config.sh"
-	def deploymentEnvironment = dirName.substring(0, dirName.length() - "-config".length())
+	def deploymentEnvironment = dirName.substring(0, dirName.length() - "-config".length()).capitalize()
 
 	tasks.register("deployTo${deploymentEnvironment}") {
+		group "deployment"
+		description "Deploy to ${deploymentEnvironment}"
+
+		dependsOn 'generateSources:generateSources'
+		dependsOn 'checkGitRepoClean'
+
 		doLast {
 			println "Going to deploy to ${deploymentEnvironment}"
 		}
@@ -33,7 +44,7 @@ fileTree(configsDir).matching(new PatternSet().setIncludes(["*-config"])).visit 
 	}
 }
 
-task checkGitRepoClean(type: Exec) {
+tasks.register('checkGitRepoClean', Exec) {
 	commandLine "git", "status", "--porcelain"
 	standardOutput = new ByteArrayOutputStream()
 
@@ -57,10 +68,37 @@ task checkGitRepoClean(type: Exec) {
 	}
 }
 
-//fileTree("$rootDir/scripts/").matching(new PatternSet().setIncludes(["*-config"])).visit {	FileVisitDetails details ->
-//    println details.file.path
-//}
+def createTestDb = createSymfonyTestCommandTask("createTestDatabase", "doctrine:database:create", message:"Creating the test database")
+def dropTestDbSchema = createSymfonyTestCommandTask("dropTestDatabaseSchema", "doctrine:schema:drop", "--force", message: "Dropping the schema of the test database")
 
-//fileTree("$rootDir/scripts/").visit {	FileVisitDetails details ->
-//    println details.file.path
-//}
+tasks.register("runSymfonyTests") {
+	group = "symfony"
+	description = "run the test against the local code"
+	dependsOn createTestDb
+}
+
+def createSymfonyTestCommandTask(Map options = [:], String taskName, String... symfonyCommand) {
+	return tasks.register(taskName, Exec) {
+		workingDir symfonyDir
+
+		def cli = [symfonyConsole, "--env=test"]
+		cli.addAll(symfonyCommand)
+		commandLine(cli)
+		environment "APP_ENV", "test"
+
+		if (options.get("stdin")) {
+			standardInput = new ByteArrayInputStream(options.get("stdin").getBytes('UTF-8'))
+		}
+
+		if (options.get("message")) {
+			doFirst {
+				println options.get("message")
+			}
+		}
+
+		if (options.get("previousTask")) {
+			dependsOn(options.get("previousTask"))
+		}
+	}
+}
+
