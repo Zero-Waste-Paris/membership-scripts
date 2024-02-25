@@ -68,19 +68,30 @@ tasks.register('checkGitRepoClean', Exec) {
 	}
 }
 
+def composerInstallTask = tasks.register("composerInstall", Exec) {
+	workingDir symfonyDir
+	commandLine("composer install".split(" "))
+	outputs.files(fileTree(symfonyDir + "/vendor"))
+	inputs.files(symfonyDir + "/composer.lock")
+	dependsOn 'generateSources:generateSymfonyBundle'
+}
+
 def createTestDb = createSymfonyTestCommandTask("createTestDatabase", "doctrine:database:create", message:"Creating the test database")
 def dropTestDbSchema = createSymfonyTestCommandTask("dropTestDatabaseSchema", "doctrine:schema:drop --force".split(" "), message: "Dropping the schema of the test database", previousTask: createTestDb)
 def createTestDbSchema = createSymfonyTestCommandTask("createTestDatabaseSchema", "doctrine:schema:create", message: "Creating the schema of the test database", previousTask: dropTestDbSchema)
+def initializeTestDbWithLastSuccessfulRunDate = createSymfonyTestCommandTask("initializeTestDbWithLastSuccessfulRunDate", "doctrine:database:initialize-last-successful-run-date 2022-01-01".split(" "), message: "initialize last successful run date", previousTask: createTestDbSchema)
+def initializeTestUser = createSymfonyTestCommandTask("initializeTestUser", "user:add testuser".split(" "), message: "Create test user", previousTask: createTestDbSchema, stdin: "testpassword")
 
 tasks.register("runSymfonyTests", Exec) {
 	group = "symfony"
 	description = "run the test against the local code"
-	dependsOn createTestDbSchema
+	dependsOn initializeTestDbWithLastSuccessfulRunDate, initializeTestUser
 
 	workingDir symfonyDir
 	environment "APP_ENV", "test"
 	environment "XDEBUG_MODE", "coverage"
 	commandLine('php bin/phpunit --coverage-html coverage'.split(" "))
+	dependsOn(composerInstallTask)
 }
 
 def createSymfonyTestCommandTask(Map options = [:], String taskName, String... symfonyCommand) {
@@ -107,4 +118,3 @@ def createSymfonyTestCommandTask(Map options = [:], String taskName, String... s
 		}
 	}
 }
-
