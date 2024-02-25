@@ -69,12 +69,18 @@ tasks.register('checkGitRepoClean', Exec) {
 }
 
 def createTestDb = createSymfonyTestCommandTask("createTestDatabase", "doctrine:database:create", message:"Creating the test database")
-def dropTestDbSchema = createSymfonyTestCommandTask("dropTestDatabaseSchema", "doctrine:schema:drop", "--force", message: "Dropping the schema of the test database")
+def dropTestDbSchema = createSymfonyTestCommandTask("dropTestDatabaseSchema", "doctrine:schema:drop --force".split(" "), message: "Dropping the schema of the test database", previousTask: createTestDb)
+def createTestDbSchema = createSymfonyTestCommandTask("createTestDatabaseSchema", "doctrine:schema:create", message: "Creating the schema of the test database", previousTask: dropTestDbSchema)
 
-tasks.register("runSymfonyTests") {
+tasks.register("runSymfonyTests", Exec) {
 	group = "symfony"
 	description = "run the test against the local code"
-	dependsOn createTestDb
+	dependsOn createTestDbSchema
+
+	workingDir symfonyDir
+	environment "APP_ENV", "test"
+	environment "XDEBUG_MODE", "coverage"
+	commandLine('php bin/phpunit --coverage-html coverage'.split(" "))
 }
 
 def createSymfonyTestCommandTask(Map options = [:], String taskName, String... symfonyCommand) {
