@@ -39,6 +39,7 @@ class MemberImporter {
 		private GroupMemberDeleter $groupMemberDeleter,
 		private RegistrationDateUtil $dateUtil,
 		private NowProvider $nowProvider,
+		private ContainerBagInterface $params,
 		) {}
 
 	public function run(bool $debug) {
@@ -49,6 +50,7 @@ class MemberImporter {
 			$dateBeforeWhichAllRegistrationsHaveBeenHandled = $this->computeDateBeforeWhichAllRegistrationsHaveBeenHandled($lastSuccessfulRunDate);
 
 			$subscriptions = $this->helloassoConnector->getAllHelloAssoSubscriptions($dateBeforeWhichAllRegistrationsHaveBeenHandled, $this->nowProvider->getNow());
+			$this->optionRepository->resetNumberOfSuccessiveHelloassoFailures($debug);
 			$this->logger->info("retrieved data from HelloAsso. Got " . count($subscriptions) . " action(s)");
 
 			foreach($subscriptions as $subscription) {
@@ -63,9 +65,23 @@ class MemberImporter {
 
 			$this->optionRepository->writeLastSuccessfulRunDate($this->nowProvider->getNow(), $debug);
 			$this->logger->info("Completed successfully");
+		} catch (HelloAssoException $e) {
+			$this->handleHelloassoException($e, $debug);
+			throw $e;
 		} catch (\Throwable $t) {
 			$this->logger->error("Failed with error:" . $t->getMessage() . ". " . $t->getTraceAsString());
 			throw $t;
+		}
+	}
+
+	private function handleHelloassoException(HelloAssoException $e, bool $debug): void {
+		$this->optionRepository->incrementNumberOfSuccessiveHelloassoFailures($debug);
+		$nbSucessiveHAFailures = $this->optionRepository->getNumberOfSuccessiveHelloassoFailures();
+		$logMessage = "Failed to query helloasso (" . $nbSucessiveHAFailures. "): " . $e->getMessage() . " . " . $e->getTraceAsString();
+		if ($nbSucessiveHAFailures < $this->params->get("helloasso.nbSuccessiveFailuresBeforeLoggingAnError")) {
+			$this->logger->warning($logMessage);
+		} else {
+			$this->logger->error($logMessage);
 		}
 	}
 

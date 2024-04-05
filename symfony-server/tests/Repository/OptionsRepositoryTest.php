@@ -33,4 +33,40 @@ final class OptionsRepositoryTest extends KernelTestCase {
 		$this->optionRepository->writeLastSuccessfulRunDate($date3, true);
 		$this->assertEquals($date2, $this->optionRepository->getLastSuccessfulRunDate(), "We should retrieve the previous value since the last write was in debug mode");
 	}
+
+    public function test_readNumberOfSuccessiveHelloassoFailures(): void {
+      $this->assertEquals(0, $this->optionRepository->getNumberOfSuccessiveHelloassoFailures(),
+        "Can read data even if it is not initialized already");
+    }
+
+    public function test_incrementNumberOfSuccessiveHelloassoFailures(): void {
+      $this->optionRepository->incrementNumberOfSuccessiveHelloassoFailures(false); // This also check that we can increment even when data is not initialized
+      $this->assertEquals(1, $this->optionRepository->getNumberOfSuccessiveHelloassoFailures());
+      $this->optionRepository->incrementNumberOfSuccessiveHelloassoFailures(false);
+      $this->assertEquals(2, $this->optionRepository->getNumberOfSuccessiveHelloassoFailures());
+
+      // Test debug mode
+      $this->optionRepository->incrementNumberOfSuccessiveHelloassoFailures(true);
+      $this->assertEquals(2, $this->optionRepository->getNumberOfSuccessiveHelloassoFailures());
+    }
+
+    public function test_resetNumberOfSuccessiveHelloassoFailures(): void {
+      $this->optionRepository->resetNumberOfSuccessiveHelloassoFailures(false); // Check it does not throw when the data is not initialized
+
+      // Pre-conditions + setup
+      $this->assertEquals(0, $this->optionRepository->getNumberOfSuccessiveHelloassoFailures());
+      $this->optionRepository->incrementNumberOfSuccessiveHelloassoFailures(false);
+      $this->assertEquals(1, $this->optionRepository->getNumberOfSuccessiveHelloassoFailures());
+
+      // Act & Assert
+      $this->optionRepository->resetNumberOfSuccessiveHelloassoFailures(false);
+      $this->assertEquals(0, $this->optionRepository->getNumberOfSuccessiveHelloassoFailures());
+
+      // Test debug mode
+      $this->optionRepository->incrementNumberOfSuccessiveHelloassoFailures(false);
+      $this->assertEquals(1, $this->optionRepository->getNumberOfSuccessiveHelloassoFailures());
+      $this->optionRepository->resetNumberOfSuccessiveHelloassoFailures(true);
+      $this->assertEquals(1, $this->optionRepository->getNumberOfSuccessiveHelloassoFailures());
+    }
 }
+

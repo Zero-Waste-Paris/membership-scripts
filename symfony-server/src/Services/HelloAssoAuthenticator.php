@@ -19,6 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 namespace App\Services;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Psr\Log\LoggerInterface;
 use App\Models\HelloAssoTokens;
@@ -72,7 +73,14 @@ class HelloAssoAuthenticator {
 			]
 		]);
 
-		if ($response->getStatusCode() == 401 || $response->getStatusCode() == 400) {
+		$statusCode = null;
+		try {
+			$statusCode = $response->getStatusCode();
+		} catch (TransportExceptionInterface $e) {
+			throw new HelloAssoException($e);
+		}
+
+		if ($statusCode == 401 || $statusCode == 400) {
 			$this->logger->info("Got 4xx when trying to use helloasso refresh token. We try to get brand new ones");
 			$this->getTokensFromScratch();
 		} else {
@@ -113,7 +121,13 @@ class HelloAssoAuthenticator {
 				"client_secret" => $this->params->get('helloasso.clientSecret')
 			]
 		]);
-		$content = $response->getContent();
+
+		$content = null;
+		try {
+			$content = $response->getContent();
+		} catch (TransportExceptionInterface $e) {
+			throw new HelloAssoException($e);
+		}
 		$tokensFromScratch = HelloAssoTokens::fromContentInRam($content, $this->logger);
 		if ($tokensFromScratch == null) {
 			$this->logger->error("Failed to get tokens from scratch. The rest of the run may fail");
@@ -121,5 +135,12 @@ class HelloAssoAuthenticator {
 			$this->latestTokens = $tokensFromScratch;
 			$this->writeTokensFile($content);
 		}
+	}
+}
+
+class HelloAssoException extends \Exception {
+
+	public function __construct(\Throwable $inner) {
+		parent::__construct($inner->getMessage(), $inner->getCode(), $inner);
 	}
 }
