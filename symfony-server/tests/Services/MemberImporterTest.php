@@ -4,8 +4,10 @@ declare(strict_types=1);
 require_once __DIR__ . '/../TestHelperTrait.php';
 
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use PHPUnit\Framework\Constraint\ObjectEquals;
+use Psr\Log\LoggerInterface;
 
 use App\Entity\Member;
 use App\Models\RegistrationEvent;
@@ -18,6 +20,7 @@ use App\Services\GoogleGroupService;
 use App\Services\EmailService;
 use App\Services\GroupMemberDeleter;
 use App\Services\NowProvider;
+use App\Services\HelloAssoException;
 
 final class MemberImporterTest extends KernelTestCase {
 	use TestHelperTrait;
@@ -29,12 +32,16 @@ final class MemberImporterTest extends KernelTestCase {
 	private GoogleGroupService $googleMock;
 	private MailchimpConnector $mailchimpMock;
 	private NowProvider $nowProviderMock;
+	private LoggerInterface $loggerMock;
+	private ContainerBagInterface $paramsMock;
 
 	private bool $useMockForMemberRepository;
+	private bool $shouldSendEmailAboutSlackMembersToReactivate;
 
 
 	protected function setUp(): void {
 		$this->useMockForMemberRepository = true;
+		$this->shouldSendEmailAboutSlackMembersToReactivate = true;
 		self::bootKernel();
 
 		$this->mailMock        = $this->createMock(EmailService::class);
@@ -44,18 +51,24 @@ final class MemberImporterTest extends KernelTestCase {
 		$this->googleMock      = $this->createMock(GoogleGroupService::class);
 		$this->mailchimpMock   = $this->createMock(MailchimpConnector::class);
 		$this->nowProviderMock = $this->createMock(NowProvider::class);
+		$this->loggerMock      = $this->createMock(LoggerInterface::class);
+		$this->paramsMock      = $this->createMock(ContainerBagInterface::class);
 
-		$this->mailMock->expects(self::once())->method('sendEmailAboutSlackMembersToReactivate');
 		$this->googleMock->expects(self::once())->method('initialize');
 	}
 
 	private function registerAllMockInContainer(): void {
+		if ($this->shouldSendEmailAboutSlackMembersToReactivate) {
+			$this->mailMock->expects(self::once())->method('sendEmailAboutSlackMembersToReactivate');
+		}
 		self::getContainer()->set(EmailService::class,       $this->mailMock);
 		self::getContainer()->set(OptionsRepository::class,  $this->optionRepoMock);
 		self::getContainer()->set(HelloAssoConnector::class, $this->helloAssoMock);
 		self::getContainer()->set(GooGleGroupService::class, $this->googleMock);
 		self::getContainer()->set(MailchimpConnector::class, $this->mailchimpMock);
-		self::getContainer()->set(NowProvider::class,    $this->nowProviderMock);
+		self::getContainer()->set(NowProvider::class,        $this->nowProviderMock);
+		self::getContainer()->set(LoggerInterface::class,    $this->loggerMock);
+		self::getContainer()->set(ContainerBagInterface::class, $this->paramsMock);
 		if ($this->useMockForMemberRepository) {
 			self::getContainer()->set(MemberRepository::class, $this->memberRepoMock);
 		}
@@ -70,6 +83,8 @@ final class MemberImporterTest extends KernelTestCase {
 		$this->expectsEventRegistration($registrationEvent);
 		$this->expectsOldMembersAreNotDeleted();
 		$this->expectsNoNotificationsAreSentAboutNewcomers();
+		// TODO: add an expectations that HA successive errors are resetted
+		// TODO: add assert no increment in number of HA successive errors
 		$this->setDatesInMock($now, $lastSuccessfulRunDate);
 
 		$this->registerAllMockInContainer();
@@ -77,6 +92,49 @@ final class MemberImporterTest extends KernelTestCase {
 		// Act
 		$sut = self::getContainer()->get(MemberImporter::class);
 		$sut->run(false);
+	}
+
+	public function test_logWarningWhenOnlyAFewHelloassoErrors(): void {
+		// Setup
+		$this->helloAssoMock->expects(self::once())->method('getAllHelloAssoSubscriptions')->will($this->throwException(new HelloAssoException(new Exception())));
+		$this->loggerMock->expects(self::never())->method('error');
+		$this->loggerMock->expects(self::once())->method('warning');
+		$this->optionRepoMock->expects(self::once())->method('incrementNumberOfSuccessiveHelloassoFailures');
+		$this->optionRepoMock->expects(self::once())->method('getNumberOfSuccessiveHelloassoFailures')->willReturn(1);
+		$this->shouldSendEmailAboutSlackMembersToReactivate = false; // Not because it should never do it, but because we don't care (and in practice it indeed does not do it)
+		$this->paramsMock->expects(self::once())->method('get')->with($this->equalTo('helloasso.nbSuccessiveFailuresBeforeLoggingAnError'))->willReturn(5);
+
+		$this->registerAllMockInContainer();
+
+		// Act
+		$sut = self::getContainer()->get(MemberImporter::class);
+		try {
+			$sut->run(false);
+			$this->fail("Expected to have the exception rethrown but it was not the case");
+		} catch (HelloAssoException $e) {
+		  // Nothing to do: it's the expected behavior
+		}
+	}
+
+	public function test_logErrorWhenSeveralSuccessiveRunsFailedBecauseOfHelloAssoErrors(): void {
+		// Setup
+		$this->helloAssoMock->expects(self::once())->method('getAllHelloAssoSubscriptions')->will($this->throwException(new HelloAssoException(new Exception())));
+		$this->loggerMock->expects(self::once())->method('error');
+		$this->optionRepoMock->expects(self::once())->method('incrementNumberOfSuccessiveHelloassoFailures');
+		$this->optionRepoMock->expects(self::once())->method('getNumberOfSuccessiveHelloassoFailures')->willReturn(100);
+		$this->shouldSendEmailAboutSlackMembersToReactivate = false; // Not because it should never do it, but because we don't care (and in practice it indeed does not do it)
+		$this->paramsMock->expects(self::once())->method('get')->with($this->equalTo('helloasso.nbSuccessiveFailuresBeforeLoggingAnError'))->willReturn(5);
+
+		$this->registerAllMockInContainer();
+
+		// Act
+		$sut = self::getContainer()->get(MemberImporter::class);
+		try {
+			$sut->run(false);
+			$this->fail("Expected to have the exception rethrown but it was not the case");
+		} catch (HelloAssoException $e) {
+		  // Nothing to do: it's the expected behavior
+		}
 	}
 
 	public function test_sendNotificationForAdminsAboutNewcomers(): void {
