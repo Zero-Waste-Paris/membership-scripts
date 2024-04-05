@@ -34,6 +34,7 @@ use Psr\Log\LoggerInterface;
 class OptionsRepository extends ServiceEntityRepository
 {
 	const OPTION_LASTSUCCESSFULRUN_NAME = "last_successful_run_date";
+	const OPTION_COUNTER_HELLOASSO_SUCCESSIVE_FAILURES = "counter_helloasso_successive_failures";
 
 	public function __construct(ManagerRegistry $registry, private LoggerInterface $logger)
 	{
@@ -81,5 +82,52 @@ class OptionsRepository extends ServiceEntityRepository
 			$this->save($option, true);
 			$this->logger->info("Start date successfully persisted in db");
 		}
+	}
+
+	public function getNumberOfSuccessiveHelloassoFailures(): int {
+		$option = $this->getNumberOfSuccessiveHelloassoFailuresOption();
+		return $option == null ? 0 : $option->getValue();
+	}
+
+	public function incrementNumberOfSuccessiveHelloassoFailures(bool $debug): void {
+		if ($debug) {
+			$this->logger->info("Not updating number of successive helloasso failures because we're in debug mode");
+			return;
+		}
+
+		$option = $this->getNumberOfSuccessiveHelloassoFailuresOption();
+		if ($option == null) {
+			$option = new Options();
+			$option
+			->setName(self::OPTION_COUNTER_HELLOASSO_SUCCESSIVE_FAILURES)
+			->setValue("1");
+		} else {
+			$option->setValue($option->getValue() + 1);
+		}
+
+		$this->save($option, true);
+		$this->logger->info("Updated number of successive helloasso failures (new value: " . $option->getValue() . ")");
+	}
+
+	public function resetNumberOfSuccessiveHelloassoFailures(bool $debug): void {
+		$option = $this->getNumberOfSuccessiveHelloassoFailuresOption();
+
+		if ($option == null) {
+			$this->logger->info("number of successive helloasso failures isn't initialized so we don't need to reset anything");
+			return;
+		}
+		if ($debug) {
+			$this->logger->info("Not resetting number of successive helloasso failures because we're in debug mode");
+			return;
+		}
+
+		$option->setValue(0);
+
+		$this->save($option, true);
+		$this->logger->info("resetted number of successive helloasso failures");
+	}
+
+	private function getNumberOfSuccessiveHelloassofailuresOption(): ?Options {
+		return $this->findOneBy(['name' => self::OPTION_COUNTER_HELLOASSO_SUCCESSIVE_FAILURES]);
 	}
 }
