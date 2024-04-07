@@ -69,7 +69,7 @@ class MemberImporter {
 			$this->handleHelloassoException($e, $debug);
 			throw $e;
 		} catch (\Throwable $t) {
-			$this->logger->error("Failed with error:" . $t->getMessage() . ". " . $t->getTraceAsString());
+			$this->logger->error("Failed with error of type " . get_class($t) . " :" . $t->getMessage() . ". " . $t->getTraceAsString());
 			throw $t;
 		}
 	}
