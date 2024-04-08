@@ -19,6 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 namespace App\Services;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Component\HttpClient\Exception\ServerException;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Psr\Log\LoggerInterface;
@@ -85,7 +86,12 @@ class HelloAssoAuthenticator {
 			$this->getTokensFromScratch();
 		} else {
 			$this->logger->info("Got new helloasso tokens");
-			$content = $response->getContent();
+			$content = null;
+			try {
+				$content = $response->getContent();
+			} catch (ServerException $e) {
+				throw new HelloAssoException($e);
+			}
 			$newTokens = HelloAssoTokens::fromContentInRam($content, $this->logger);
 			// It already occured that we received corrupted content from helloasso. We check for this case because
 			// we at least want to make sure we don't override the file on the filesystem.
