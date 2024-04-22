@@ -46,6 +46,9 @@ when@prod:
                 level: info
                 channels: ["!deprecation"]
                 max_files: 30
+            filter_cli:
+                type: non_sapi_handler
+                handler: slack
             slack:
                 type: slack
                 token: '%slack.botToken%'
