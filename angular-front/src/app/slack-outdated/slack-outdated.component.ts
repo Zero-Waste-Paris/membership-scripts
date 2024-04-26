@@ -3,11 +3,12 @@ import { TimestampedSlackUserList } from '../generated/api/model/timestampedSlac
 import { DataProviderService } from '../data-provider.service';
 import { DefaultService } from '../generated/api/api/default.service';
 import { NgIf, NgFor, DatePipe } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-slack-outdated',
   standalone: true,
-  imports: [NgIf, NgFor, DatePipe],
+  imports: [NgIf, NgFor, DatePipe, MatProgressSpinnerModule],
   templateUrl: './slack-outdated.component.html',
   styleUrl: './slack-outdated.component.css'
 })

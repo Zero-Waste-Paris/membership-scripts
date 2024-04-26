@@ -1,16 +1,18 @@
 import { Component, Output, EventEmitter } from '@angular/core';
+import { NgIf } from '@angular/common';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DefaultLoginService } from '../generated/login/api/default.service';
 import { LoginPostRequest} from '../generated/login/model/loginPostRequest';
 import { User } from '../generated/login/model/user';
 import { Observable } from 'rxjs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 
 @Component({
 	selector: 'app-login',
 	templateUrl: './login.component.html',
 	styleUrls: ['./login.component.css'],
 	standalone: true,
-	imports: [FormsModule, ReactiveFormsModule]
+	imports: [FormsModule, NgIf, ReactiveFormsModule, MatProgressSpinnerModule]
 })
 export class LoginComponent {
 	@Output() loginSuccessful = new EventEmitter();

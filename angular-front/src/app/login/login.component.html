@@ -11,3 +11,5 @@
 
 	<button class="button" type="submit" [disabled]="credentialsBeingProcessed">Login</button>
 </form>
+
+<div *ngIf="credentialsBeingProcessed"><mat-spinner></mat-spinner></div>

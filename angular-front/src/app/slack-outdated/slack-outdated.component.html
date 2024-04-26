@@ -1,4 +1,4 @@
-<div *ngIf="!data">Chargement en cours</div>
+<div *ngIf="!data"><mat-spinner></mat-spinner></div>
 
 <div *ngIf="data">
 	<span *ngIf="!data.isFresh" class="warning">Utilisation de données en cache datant de {{this.data.timestamp*1000 | date:'y-MM-ddThh:mm:ssZZZZZ'}}</span>
