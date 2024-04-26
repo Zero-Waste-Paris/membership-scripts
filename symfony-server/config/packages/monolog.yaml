@@ -40,15 +40,16 @@ when@test:
 when@prod:
     monolog:
         handlers:
+            filter_cli:
+                type: service
+                id: App\Services\MonologCliFilterHandler
+                handler: file
             file:
                 type: rotating_file
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
                 level: info
                 channels: ["!deprecation"]
                 max_files: 30
-            filter_cli:
-                type: non_sapi_handler
-                handler: slack
             slack:
                 type: slack
                 token: '%slack.botToken%'
