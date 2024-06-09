@@ -16,7 +16,7 @@ security:
         # the cron engine we use does not handle authentication so we allow unauthenticated access on it.
         # (we still check a secret token to grant access, but it's handled by custom code)
         cron_access:
-            pattern: ^/api/trigger-import-run
+            pattern: ^/api/(trigger-import-run|log-error-if-there-are-slack-accounts-to-deactivate)
             security: false
         main:
             lazy: true

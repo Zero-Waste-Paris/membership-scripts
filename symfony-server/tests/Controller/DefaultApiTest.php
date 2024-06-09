@@ -10,6 +10,7 @@ use App\Models\RegistrationEvent;
 use App\Repository\MemberRepository;
 use App\Services\NowProvider;
 use App\Services\MemberImporter;
+use App\Services\SlackService;
 use App\Controller\DefaultApi;
 use App\Entity\User;
 use App\Repository\UserRepository;
@@ -107,6 +108,20 @@ class DefaultApiTest extends KernelTestCase {
 		// Act
 		$sut = self::getContainer()->get(DefaultApi::class);
 		$sut->apiTriggerImportRunGet("invalid-token", null, $this->responseCode, $this->responseHeaders);
+
+		// Remaining assert
+		$this->assertEquals("403", $this->responseCode);
+	}
+
+	public function test_apiLogErrorIfThereAreSlackAccountsToDeactivateGet_rejectRequestsWhenTokenIsInvalid(): void {
+		// Setup and an assert
+		$slackServiceMock = $this->createMock(SlackService::class);
+		$slackServiceMock->expects(self::never())->method('findUsersToDeactivate');
+		self::getContainer()->set(SlackService::class, $slackServiceMock);
+
+		// Act
+		$sut = self::getContainer()->get(DefaultApi::class);
+		$sut->apiLogErrorIfThereAreSlackAccountsToDeactivateGet("invalid-token", $this->responseCode, $this->responseHeaders);
 
 		// Remaining assert
 		$this->assertEquals("403", $this->responseCode);
