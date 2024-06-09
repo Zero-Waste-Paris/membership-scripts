@@ -40,6 +40,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TimestampedSlackUserList'
+  /api/log-error-if-there-are-slack-accounts-to-deactivate:
+    get:
+      summary: "check if there are slack accounts to deactivate and log an error (hence, possibly, get an alert) if there are any"
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: OK
   /api/update-user-password:
     post:
       summary: "Make it possible for a user to change his or her password"

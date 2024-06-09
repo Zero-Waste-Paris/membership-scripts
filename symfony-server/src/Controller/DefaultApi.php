@@ -34,6 +34,7 @@ use App\Entity\MemberAdditionalEmail;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class DefaultApi implements DefaultApiInterface {
@@ -47,6 +48,7 @@ class DefaultApi implements DefaultApiInterface {
 		private SlackService $slackService,
 		private UserRepository $userRepository,
 		private UserPasswordHasherInterface $passwordHasher,
+		private UrlGeneratorInterface $router,
 		private Security $security, // Wouldn't be needed if we extends AbstractController, but it would make the code harder to test
 	) { }
 
@@ -79,12 +81,20 @@ class DefaultApi implements DefaultApiInterface {
 	}
 
 	public function apiTriggerImportRunGet(string $token, ?bool $debug, int &$responseCode, array &$responseHeaders): void {
-		if ($token !== $this->params->get("cron.accessToken")) {
-			$this->logger->info("rejecting query because the token is incorrect");
-			$responseCode = 403;
+		if (!$this->isTokenOk($token, $responseCode)) {
 			return;
-		} else {
-			$this->memberImporter->run($debug ?? true);
+		}
+		$this->memberImporter->run($debug ?? true);
+	}
+
+	public function apiLogErrorIfThereAreSlackAccountsToDeactivateGet(string $token, int &$responseCode, array &$responseHeaders): void {
+		if (!$this->isTokenOk($token, $responseCode)) {
+			return;
+		}
+		$nbUsersToDeactivate = count($this->slackService->findUsersToDeactivate()->getMembers());
+		if ($nbUsersToDeactivate > 0) {
+			$this->logger->error("Il y a $nbUsersToDeactivate comptes Slack qui ne sont pas associé à une adresse mail connue." .
+			"La liste est disponible via: " . $this->router->generate("apiLogErrorIfThereAreSlackAccountsToDeactivateGet", [], UrlGeneratorInterface::ABSOLUTE_URL));
 		}
 	}
 
@@ -132,4 +142,15 @@ class DefaultApi implements DefaultApiInterface {
 		$this->logger->info("Updateing password");
 		$this->userRepository->upgradePassword($user, $this->passwordHasher->hashPassword($user, $newPassword));
 	}
+
+	private function isTokenOk(string $queryToken, int &$responseCode): bool {
+		if ($queryToken !== $this->params->get("cron.accessToken")) {
+			$this->logger->info("rejecting query because the token is incorrect");
+			$responseCode = 403;
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 }
