@@ -7,7 +7,7 @@ doctrine:
         #server_version: '16'
 
         profiling_collect_backtrace: '%kernel.debug%'
-        #use_savepoints: true # Added by a recipe update, but then tests fail with 'ConnectionException: May not alter the nested transaction with savepoints behavior while a transaction is open'
+        use_savepoints: true
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
