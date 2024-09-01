@@ -19,16 +19,16 @@
         "google/auth": "^1.28",
         "jolicode/slack-php-api": "^4.5",
         "nyholm/psr7": "*",
-        "symfony/console": "6.4.*",
-        "symfony/dotenv": "6.4.*",
+        "symfony/console": "7.0.*",
+        "symfony/dotenv": "7.0.*",
         "symfony/flex": "^2",
-        "symfony/framework-bundle": "6.4.*",
-        "symfony/http-client": "6.4.*",
-        "symfony/mailer": "6.4.*",
+        "symfony/framework-bundle": "7.0.*",
+        "symfony/http-client": "7.0.*",
+        "symfony/mailer": "7.0.*",
         "symfony/monolog-bundle": "^3.8",
-        "symfony/runtime": "6.4.*",
-        "symfony/security-bundle": "6.4.*",
-        "symfony/yaml": "6.4.*",
+        "symfony/runtime": "7.0.*",
+        "symfony/security-bundle": "7.0.*",
+        "symfony/yaml": "7.0.*",
         "zero-waste-paris/membership-scripts": "dev-master"
     },
     "config": {
@@ -80,16 +80,16 @@
         ],
         "symfony": {
             "allow-contrib": false,
-            "require": "6.4.*",
+            "require": "7.0.*",
             "docker": true
         }
     },
     "require-dev": {
-        "dama/doctrine-test-bundle": "^7.2",
+        "dama/doctrine-test-bundle": "^8.2",
         "phpunit/phpunit": "^9.5",
-        "symfony/browser-kit": "6.4.*",
-        "symfony/css-selector": "6.4.*",
+        "symfony/browser-kit": "7.0.*",
+        "symfony/css-selector": "7.0.*",
         "symfony/maker-bundle": "^1.49",
-        "symfony/phpunit-bridge": "^6.4"
+        "symfony/phpunit-bridge": "^7.0"
     }
 }
