@@ -27,6 +27,9 @@ use Psr\Log\LoggerInterface;
 use JoliCode\Slack\Api\Model\ObjsUser;
 
 class SlackService {
+	private $client;
+	private $allowListedDomain;
+	private $usersListLocalCache;
 
 	public function __construct(
 		private LoggerInterface $logger,

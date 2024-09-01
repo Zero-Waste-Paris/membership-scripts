@@ -24,6 +24,8 @@ use Psr\Log\LoggerInterface;
 use App\Models\GroupWithDeletableUsers;
 
 class GoogleGroupService implements GroupWithDeletableUsers {
+	private $groupName;
+
 	public function __construct(
 		private LoggerInterface $logger,
 		private ContainerBagInterface $params,
