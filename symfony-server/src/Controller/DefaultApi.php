@@ -94,7 +94,7 @@ class DefaultApi implements DefaultApiInterface {
 		$nbUsersToDeactivate = count($this->slackService->findUsersToDeactivate()->getMembers());
 		if ($nbUsersToDeactivate > 0) {
 			$this->logger->error("Il y a $nbUsersToDeactivate comptes Slack qui ne sont pas associé à une adresse mail connue." .
-			"La liste est disponible via: " . $this->router->generate("open_api_server_default_apislackaccountstodeactivateget", [], UrlGeneratorInterface::ABSOLUTE_URL));
+			" La liste est disponible via: " . $this->router->generate("open_api_server_default_apislackaccountstodeactivateget", [], UrlGeneratorInterface::ABSOLUTE_URL));
 		} else {
 			$this->logger->info("Every slack user is a registered member");
 		}
