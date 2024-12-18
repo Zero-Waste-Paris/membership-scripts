@@ -61,7 +61,7 @@ class SlackService {
 			// We should be able to make at least a call per minute. If data is 5 minutes old, then something is wrong$                                                                                                ^I^I^I// but it can be that something is wrong on Slack side and we don't want to have an alert as soon as slack returns a 5xx.$
 			// Since it's not so crucial to have a very up to date list (we don't have new slack member every hour), we setup a limit such that$
 			// several cron runs in a row may fail$
-			$maxAcceptableAgeInSeconds = 3*3600 + 100;$
+			$maxAcceptableAgeInSeconds = 3*3600 + 100;
 			try {
 				return SlackMembersTimestamped::fromFile($this->usersListLocalCache, $this->logger, $this->nowProvider->getNow(), $maxAcceptableAgeInSeconds);
 			} catch(Exception $e) {
