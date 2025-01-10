@@ -14,6 +14,7 @@ import { provideRouter, RouterModule, Routes } from '@angular/router';
 import { MembersListPageComponent } from './app/members-list-page/members-list-page.component';
 import { PasswordChangerComponent } from './app/password-changer/password-changer.component';
 import { SlackOutdatedComponent } from './app/slack-outdated/slack-outdated.component';
+import { MySwaggerUiComponent } from './app/my-swagger-ui/my-swagger-ui.component';
 
 function clientConfigFactory(): Configuration {
 	return new Configuration(buildClientsConfigParameters());
@@ -33,6 +34,7 @@ const routes: Routes = [
 	{ path: '', component: MembersListPageComponent },
 	{ path: 'account', component: PasswordChangerComponent },
 	{ path: 'unknown-slack-accounts', component: SlackOutdatedComponent },
+	{ path: 'swagger-ui', component: MySwaggerUiComponent},
 ]
 
 bootstrapApplication(AppComponent, {
