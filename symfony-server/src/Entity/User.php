@@ -104,8 +104,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     /**
      * TOTP related section
      */
-    #[ORM\Column]
-    private ?string $totpSecret;
+    #[ORM\Column(nullable: true)]
+    private ?string $totpSecret = null;
 
     public function isTotpAuthenticationEnabled(): bool
     {
