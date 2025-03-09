@@ -98,6 +98,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    // TODO: find out if it should erase $totpSecret 
     }
 
     #[ORM\Column(nullable: true)]
