@@ -18,7 +18,7 @@ class ExceptionListener {
 			$response->setStatusCode(Response::HTTP_NOT_FOUND);
 			$response->setContent("Not found");
 			$event->setResponse($response);        
-		} else if ($exception->getStatusCode() === Response::HTTP_UNAUTHORIZED) {
+		} else if (method_exists($exception, "getStatusCode") && $exception->getStatusCode() === Response::HTTP_UNAUTHORIZED) {
 			$this->logger->warning("Caught unauthorized access");
 			$response = new Response();
 			$response->setStatusCode(Response::HTTP_UNAUTHORIZED);
