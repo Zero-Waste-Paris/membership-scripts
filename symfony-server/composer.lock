@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4fbc9802aea92b0cffa38c85a86e356a",
+    "content-hash": "1eb01a62683db680b1ba995cc47de217",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -4074,6 +4074,205 @@
             "time": "2019-03-08T08:55:37+00:00"
         },
         {
+            "name": "scheb/2fa-bundle",
+            "version": "v7.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/scheb/2fa-bundle.git",
+                "reference": "3011e0b8242e12cdcd64ed12a95ddb2e5899ba37"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/scheb/2fa-bundle/zipball/3011e0b8242e12cdcd64ed12a95ddb2e5899ba37",
+                "reference": "3011e0b8242e12cdcd64ed12a95ddb2e5899ba37",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "~8.2.0 || ~8.3.0 || ~8.4.0",
+                "symfony/config": "^6.4 || ^7.0",
+                "symfony/dependency-injection": "^6.4 || ^7.0",
+                "symfony/event-dispatcher": "^6.4 || ^7.0",
+                "symfony/framework-bundle": "^6.4 || ^7.0",
+                "symfony/http-foundation": "^6.4 || ^7.0",
+                "symfony/http-kernel": "^6.4 || ^7.0",
+                "symfony/property-access": "^6.4 || ^7.0",
+                "symfony/security-bundle": "^6.4 || ^7.0",
+                "symfony/twig-bundle": "^6.4 || ^7.0"
+            },
+            "conflict": {
+                "scheb/two-factor-bundle": "*"
+            },
+            "suggest": {
+                "scheb/2fa-backup-code": "Emergency codes when you have no access to other methods",
+                "scheb/2fa-email": "Send codes by email",
+                "scheb/2fa-google-authenticator": "Google Authenticator support",
+                "scheb/2fa-totp": "Temporary one-time password (TOTP) support (Google Authenticator compatible)",
+                "scheb/2fa-trusted-device": "Trusted devices support"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "Scheb\\TwoFactorBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Scheb",
+                    "email": "me@christianscheb.de"
+                }
+            ],
+            "description": "A generic interface to implement two-factor authentication in Symfony applications",
+            "homepage": "https://github.com/scheb/2fa",
+            "keywords": [
+                "2fa",
+                "Authentication",
+                "symfony",
+                "two-factor",
+                "two-step"
+            ],
+            "support": {
+                "source": "https://github.com/scheb/2fa-bundle/tree/v7.6.0"
+            },
+            "time": "2024-10-20T10:14:58+00:00"
+        },
+        {
+            "name": "scheb/2fa-totp",
+            "version": "v7.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/scheb/2fa-totp.git",
+                "reference": "be68996ec98f310716195bb5d50fcb0678a412b3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/scheb/2fa-totp/zipball/be68996ec98f310716195bb5d50fcb0678a412b3",
+                "reference": "be68996ec98f310716195bb5d50fcb0678a412b3",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~8.2.0 || ~8.3.0 || ~8.4.0",
+                "scheb/2fa-bundle": "self.version",
+                "spomky-labs/otphp": "^11.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Scheb\\TwoFactorBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Scheb",
+                    "email": "me@christianscheb.de"
+                }
+            ],
+            "description": "Extends scheb/2fa-bundle with two-factor authentication using TOTP",
+            "homepage": "https://github.com/scheb/2fa",
+            "keywords": [
+                "2fa",
+                "Authentication",
+                "symfony",
+                "totp",
+                "two-factor",
+                "two-step"
+            ],
+            "support": {
+                "source": "https://github.com/scheb/2fa-totp/tree/v7.6.0"
+            },
+            "time": "2024-10-20T10:14:58+00:00"
+        },
+        {
+            "name": "spomky-labs/otphp",
+            "version": "11.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Spomky-Labs/otphp.git",
+                "reference": "2d8ccb5fc992b9cc65ef321fa4f00fefdb3f4b33"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Spomky-Labs/otphp/zipball/2d8ccb5fc992b9cc65ef321fa4f00fefdb3f4b33",
+                "reference": "2d8ccb5fc992b9cc65ef321fa4f00fefdb3f4b33",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "paragonie/constant_time_encoding": "^2.0 || ^3.0",
+                "php": ">=8.1",
+                "psr/clock": "^1.0",
+                "symfony/deprecation-contracts": "^3.2"
+            },
+            "require-dev": {
+                "ekino/phpstan-banned-code": "^1.0",
+                "infection/infection": "^0.26|^0.27|^0.28|^0.29",
+                "php-parallel-lint/php-parallel-lint": "^1.3",
+                "phpstan/phpstan": "^1.0",
+                "phpstan/phpstan-deprecation-rules": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "phpstan/phpstan-strict-rules": "^1.0",
+                "phpunit/phpunit": "^9.5.26|^10.0|^11.0",
+                "qossmic/deptrac-shim": "^1.0",
+                "rector/rector": "^1.0",
+                "symfony/phpunit-bridge": "^6.1|^7.0",
+                "symplify/easy-coding-standard": "^12.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "OTPHP\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Florent Morselli",
+                    "homepage": "https://github.com/Spomky"
+                },
+                {
+                    "name": "All contributors",
+                    "homepage": "https://github.com/Spomky-Labs/otphp/contributors"
+                }
+            ],
+            "description": "A PHP library for generating one time passwords according to RFC 4226 (HOTP Algorithm) and the RFC 6238 (TOTP Algorithm) and compatible with Google Authenticator",
+            "homepage": "https://github.com/Spomky-Labs/otphp",
+            "keywords": [
+                "FreeOTP",
+                "RFC 4226",
+                "RFC 6238",
+                "google authenticator",
+                "hotp",
+                "otp",
+                "totp"
+            ],
+            "support": {
+                "issues": "https://github.com/Spomky-Labs/otphp/issues",
+                "source": "https://github.com/Spomky-Labs/otphp/tree/11.3.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/Spomky",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/FlorentMorselli",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2024-06-12T11:22:32+00:00"
+        },
+        {
             "name": "symfony/cache",
             "version": "v7.1.7",
             "source": {
@@ -7695,6 +7894,199 @@
             "time": "2024-04-18T09:32:20+00:00"
         },
         {
+            "name": "symfony/twig-bridge",
+            "version": "v7.1.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/twig-bridge.git",
+                "reference": "c027c54611cd194273b924c8d24d9706695171ff"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/twig-bridge/zipball/c027c54611cd194273b924c8d24d9706695171ff",
+                "reference": "c027c54611cd194273b924c8d24d9706695171ff",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "symfony/translation-contracts": "^2.5|^3",
+                "twig/twig": "^3.9"
+            },
+            "conflict": {
+                "phpdocumentor/reflection-docblock": "<3.2.2",
+                "phpdocumentor/type-resolver": "<1.4.0",
+                "symfony/console": "<6.4",
+                "symfony/form": "<6.4",
+                "symfony/http-foundation": "<6.4",
+                "symfony/http-kernel": "<6.4",
+                "symfony/mime": "<6.4",
+                "symfony/serializer": "<6.4",
+                "symfony/translation": "<6.4",
+                "symfony/workflow": "<6.4"
+            },
+            "require-dev": {
+                "egulias/email-validator": "^2.1.10|^3|^4",
+                "league/html-to-markdown": "^5.0",
+                "phpdocumentor/reflection-docblock": "^3.0|^4.0|^5.0",
+                "symfony/asset": "^6.4|^7.0",
+                "symfony/asset-mapper": "^6.4|^7.0",
+                "symfony/console": "^6.4|^7.0",
+                "symfony/dependency-injection": "^6.4|^7.0",
+                "symfony/emoji": "^7.1",
+                "symfony/expression-language": "^6.4|^7.0",
+                "symfony/finder": "^6.4|^7.0",
+                "symfony/form": "^6.4|^7.0",
+                "symfony/html-sanitizer": "^6.4|^7.0",
+                "symfony/http-foundation": "^6.4|^7.0",
+                "symfony/http-kernel": "^6.4|^7.0",
+                "symfony/intl": "^6.4|^7.0",
+                "symfony/mime": "^6.4|^7.0",
+                "symfony/polyfill-intl-icu": "~1.0",
+                "symfony/property-info": "^6.4|^7.0",
+                "symfony/routing": "^6.4|^7.0",
+                "symfony/security-acl": "^2.8|^3.0",
+                "symfony/security-core": "^6.4|^7.0",
+                "symfony/security-csrf": "^6.4|^7.0",
+                "symfony/security-http": "^6.4|^7.0",
+                "symfony/serializer": "^6.4.3|^7.0.3",
+                "symfony/stopwatch": "^6.4|^7.0",
+                "symfony/translation": "^6.4|^7.0",
+                "symfony/web-link": "^6.4|^7.0",
+                "symfony/workflow": "^6.4|^7.0",
+                "symfony/yaml": "^6.4|^7.0",
+                "twig/cssinliner-extra": "^2.12|^3",
+                "twig/inky-extra": "^2.12|^3",
+                "twig/markdown-extra": "^2.12|^3"
+            },
+            "type": "symfony-bridge",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Bridge\\Twig\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides integration for Twig with various Symfony components",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/twig-bridge/tree/v7.1.10"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-12-19T14:23:39+00:00"
+        },
+        {
+            "name": "symfony/twig-bundle",
+            "version": "v7.1.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/twig-bundle.git",
+                "reference": "af902314a71fb412ae412094f7e1d7e49594507b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/twig-bundle/zipball/af902314a71fb412ae412094f7e1d7e49594507b",
+                "reference": "af902314a71fb412ae412094f7e1d7e49594507b",
+                "shasum": ""
+            },
+            "require": {
+                "composer-runtime-api": ">=2.1",
+                "php": ">=8.2",
+                "symfony/config": "^6.4|^7.0",
+                "symfony/dependency-injection": "^6.4|^7.0",
+                "symfony/http-foundation": "^6.4|^7.0",
+                "symfony/http-kernel": "^6.4|^7.0",
+                "symfony/twig-bridge": "^6.4|^7.0",
+                "twig/twig": "^3.0.4"
+            },
+            "conflict": {
+                "symfony/framework-bundle": "<6.4",
+                "symfony/translation": "<6.4"
+            },
+            "require-dev": {
+                "symfony/asset": "^6.4|^7.0",
+                "symfony/expression-language": "^6.4|^7.0",
+                "symfony/finder": "^6.4|^7.0",
+                "symfony/form": "^6.4|^7.0",
+                "symfony/framework-bundle": "^6.4|^7.0",
+                "symfony/routing": "^6.4|^7.0",
+                "symfony/stopwatch": "^6.4|^7.0",
+                "symfony/translation": "^6.4|^7.0",
+                "symfony/web-link": "^6.4|^7.0",
+                "symfony/yaml": "^6.4|^7.0"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Bundle\\TwigBundle\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides a tight integration of Twig into the Symfony full-stack framework",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/twig-bundle/tree/v7.1.6"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-09-25T14:20:29+00:00"
+        },
+        {
             "name": "symfony/type-info",
             "version": "v7.1.8",
             "source": {
@@ -8102,6 +8494,85 @@
                 }
             ],
             "time": "2024-09-25T14:20:29+00:00"
+        },
+        {
+            "name": "twig/twig",
+            "version": "v3.20.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twigphp/Twig.git",
+                "reference": "3468920399451a384bef53cf7996965f7cd40183"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/3468920399451a384bef53cf7996965f7cd40183",
+                "reference": "3468920399451a384bef53cf7996965f7cd40183",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1.0",
+                "symfony/deprecation-contracts": "^2.5|^3",
+                "symfony/polyfill-ctype": "^1.8",
+                "symfony/polyfill-mbstring": "^1.3"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^2.0",
+                "psr/container": "^1.0|^2.0",
+                "symfony/phpunit-bridge": "^5.4.9|^6.4|^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/Resources/core.php",
+                    "src/Resources/debug.php",
+                    "src/Resources/escaper.php",
+                    "src/Resources/string_loader.php"
+                ],
+                "psr-4": {
+                    "Twig\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Twig Team",
+                    "role": "Contributors"
+                },
+                {
+                    "name": "Armin Ronacher",
+                    "email": "armin.ronacher@active-4.com",
+                    "role": "Project Founder"
+                }
+            ],
+            "description": "Twig, the flexible, fast, and secure template language for PHP",
+            "homepage": "https://twig.symfony.com",
+            "keywords": [
+                "templating"
+            ],
+            "support": {
+                "issues": "https://github.com/twigphp/Twig/issues",
+                "source": "https://github.com/twigphp/Twig/tree/v3.20.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/twig/twig",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2025-02-13T08:34:43+00:00"
         },
         {
             "name": "zero-waste-paris/membership-scripts",
@@ -10409,6 +10880,6 @@
         "ext-ctype": "*",
         "ext-iconv": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
