@@ -14,6 +14,8 @@ We have a registration form on [HelloAsso](https://www.helloasso.com/) on which 
   * a mysql database (so we don't rely only on 3rd party for data about our members)
 * Once a year it deletes outdated memberships
 
+And it makes this data available through a dashboard that admins can access.
+
 An image is worth a thousand words, here is what is done:
 
                                       +------+
@@ -33,9 +35,9 @@ An image is worth a thousand words, here is what is done:
                                           |       +-----------+
                                           +------>|  G-Group  |
                                           |       +-----------+
-                                          |       +-----------+
-                                          +------>|  sql db   |
-                                                  +-----------+
+                                          |       +-----------+       +-----------------+
+                                          +------>|  sql db   |-----> | Admin dashboard |
+                                                  +-----------+       +-----------------+
 
 
 Those scripts are written in PHP in order to be used from our web hosting.
