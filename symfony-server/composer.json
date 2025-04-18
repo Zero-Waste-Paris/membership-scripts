@@ -18,16 +18,16 @@
         "google/auth": "^1.28",
         "jolicode/slack-php-api": "^4.5",
         "nyholm/psr7": "*",
-        "symfony/console": "7.1.*",
-        "symfony/dotenv": "7.1.*",
+        "symfony/console": "7.2.*",
+        "symfony/dotenv": "7.2.*",
         "symfony/flex": "^2",
-        "symfony/framework-bundle": "7.1.*",
-        "symfony/http-client": "7.1.*",
-        "symfony/mailer": "7.1.*",
+        "symfony/framework-bundle": "7.2.*",
+        "symfony/http-client": "7.2.*",
+        "symfony/mailer": "7.2.*",
         "symfony/monolog-bundle": "^3.8",
-        "symfony/runtime": "7.1.*",
-        "symfony/security-bundle": "7.1.*",
-        "symfony/yaml": "7.1.*",
+        "symfony/runtime": "7.2.*",
+        "symfony/security-bundle": "7.2.*",
+        "symfony/yaml": "7.2.*",
         "zero-waste-paris/membership-scripts": "dev-master"
     },
     "config": {
@@ -79,7 +79,7 @@
         ],
         "symfony": {
             "allow-contrib": false,
-            "require": "7.1.*",
+            "require": "7.2.*",
             "docker": true
         }
     },
