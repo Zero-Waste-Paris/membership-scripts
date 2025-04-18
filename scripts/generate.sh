@@ -6,7 +6,7 @@ else
 fi
 THIS_DIR="$(dirname "$THIS_FILE")"
 BIN_DIR="$THIS_DIR/../bin"
-OAG_VERSION=7.8.0
+OAG_VERSION=7.12.0
 OAG_JAR="$BIN_DIR/openapi-generator-cli.$OAG_VERSION.jar"
 OAS_FILE="$THIS_DIR/../openapi.yaml"
 OAS_LOGIN_FILE="$THIS_DIR/../openapi-login.yaml"
