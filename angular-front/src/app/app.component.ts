@@ -13,11 +13,10 @@ import { LoginComponent } from './login/login.component';
 import { NgIf, NgClass } from '@angular/common';
 
 @Component({
-	selector: 'app-root',
-	templateUrl: './app.component.html',
-	styleUrls: ['./app.component.css'],
-	standalone: true,
-	imports: [NgIf, LoginComponent, NgClass, PasswordChangerComponent, MembersListPageComponent, RouterModule, SlackOutdatedComponent]
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css'],
+    imports: [NgIf, LoginComponent, NgClass, PasswordChangerComponent, MembersListPageComponent, RouterModule, SlackOutdatedComponent]
 })
 export class AppComponent {
 	loggedIn = false; // TODO: also get the name somehow?

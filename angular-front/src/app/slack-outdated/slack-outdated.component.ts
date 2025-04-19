@@ -6,11 +6,10 @@ import { NgIf, NgFor, DatePipe } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
-  selector: 'app-slack-outdated',
-  standalone: true,
-  imports: [NgIf, NgFor, DatePipe, MatProgressSpinnerModule],
-  templateUrl: './slack-outdated.component.html',
-  styleUrl: './slack-outdated.component.css'
+    selector: 'app-slack-outdated',
+    imports: [NgIf, NgFor, DatePipe, MatProgressSpinnerModule],
+    templateUrl: './slack-outdated.component.html',
+    styleUrl: './slack-outdated.component.css'
 })
 export class SlackOutdatedComponent {
 	data: TimestampedSlackUserList|null = null;

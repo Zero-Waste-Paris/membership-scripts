@@ -5,11 +5,10 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { ApiMembersGet200ResponseInner } from '../generated/api/model/apiMembersGet200ResponseInner';
 
 @Component({
-  selector: 'app-members-list',
-  standalone: true,
-  imports: [MatTableModule, MatSortModule, NgFor],
-  templateUrl: './members-list.component.html',
-  styleUrl: './members-list.component.css'
+    selector: 'app-members-list',
+    imports: [MatTableModule, MatSortModule, NgFor],
+    templateUrl: './members-list.component.html',
+    styleUrl: './members-list.component.css'
 })
 export class MembersListComponent implements AfterViewInit {
 	@Input() members: Array<ApiMembersGet200ResponseInner> = [];

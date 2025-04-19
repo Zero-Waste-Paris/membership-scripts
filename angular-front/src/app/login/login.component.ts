@@ -8,11 +8,10 @@ import { Observable } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 
 @Component({
-	selector: 'app-login',
-	templateUrl: './login.component.html',
-	styleUrls: ['./login.component.css'],
-	standalone: true,
-	imports: [FormsModule, NgIf, ReactiveFormsModule, MatProgressSpinnerModule]
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.css'],
+    imports: [FormsModule, NgIf, ReactiveFormsModule, MatProgressSpinnerModule]
 })
 export class LoginComponent {
 	@Output() loginSuccessful = new EventEmitter();

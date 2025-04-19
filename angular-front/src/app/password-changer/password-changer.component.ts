@@ -6,11 +6,10 @@ import { ApiUpdateUserPasswordPostRequest } from '../generated/api/model/apiUpda
 import { Router } from '@angular/router';
 
 @Component({
-	selector: 'app-password-changer',
-	templateUrl: './password-changer.component.html',
-	styleUrls: ['./password-changer.component.css'],
-	standalone: true,
-	imports: [FormsModule, ReactiveFormsModule]
+    selector: 'app-password-changer',
+    templateUrl: './password-changer.component.html',
+    styleUrls: ['./password-changer.component.css'],
+    imports: [FormsModule, ReactiveFormsModule]
 })
 export class PasswordChangerComponent {
 	newPasswordSubmitted = false;

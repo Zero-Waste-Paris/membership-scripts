@@ -6,11 +6,10 @@ import { NgIf } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 
 @Component({
-  selector: 'app-members-list-page',
-  standalone: true,
-  imports: [NgIf, MembersListComponent, MatProgressSpinnerModule],
-  templateUrl: './members-list-page.component.html',
-  styleUrl: './members-list-page.component.css'
+    selector: 'app-members-list-page',
+    imports: [NgIf, MembersListComponent, MatProgressSpinnerModule],
+    templateUrl: './members-list-page.component.html',
+    styleUrl: './members-list-page.component.css'
 })
 export class MembersListPageComponent {
 	membersLoaded: boolean = false;
