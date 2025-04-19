@@ -16,7 +16,7 @@ import { NgIf, NgClass } from '@angular/common';
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css'],
-    imports: [NgIf, LoginComponent, NgClass, PasswordChangerComponent, MembersListPageComponent, RouterModule, SlackOutdatedComponent]
+    imports: [NgIf, LoginComponent, RouterModule]
 })
 export class AppComponent {
 	loggedIn = false; // TODO: also get the name somehow?
