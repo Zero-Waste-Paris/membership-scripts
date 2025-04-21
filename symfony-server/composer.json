@@ -18,6 +18,7 @@
         "google/auth": "^1.47",
         "jolicode/slack-php-api": "^4.8",
         "nyholm/psr7": "*",
+        "scheb/2fa-bundle": "^7.9",
         "symfony/console": "7.2.*",
         "symfony/dotenv": "7.2.*",
         "symfony/flex": "^2",
