@@ -101,22 +101,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     // TODO: find out if it should erase $totpSecret 
     }
 
-    #[ORM\Column(nullable: true)]
-    private ?string $totpSecret = null;
+    #[OMR\Column(nullable: true)]
+    private ?bool $totpActivated = false;
 
     public function isTotpAuthenticationEnabled(): bool
     {
-        return $this->totpSecret ? true : false;
+        return $this->totpActivated === true;
+    }
+    public function setTotpAuthenticationEnabled(bool $activated): void {
+      $this->totpActivated = $activated;
     }
 
+    #[ORM\Column(nullable: true)]
+    private ?string $totpSecret = null;
     public function getTotpAuthenticationUsername(): string
     {
         return $this->email;
     }
 
+    public function getTotpSecret(): ?string {
+        return $this->totpSecret;
+    }
+    public function setTotpSecret(string $secret): void {
+        $this->totpSecret = $secret;
+    }
+
+
     public function getTotpAuthenticationConfiguration(): TotpConfigurationInterface|null
     {
-        return $this->isTotpAuthenticationEnabled()
+        return $this->totpSecret
             ? new TotpConfiguration($this->totpSecret, TotpConfiguration::ALGORITHM_SHA1, 20, 8)
             : null;
     }
