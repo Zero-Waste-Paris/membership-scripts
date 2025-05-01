@@ -122,7 +122,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     public function getTotpSecret(): ?string {
         return $this->totpSecret;
     }
-    public function setTotpSecret(string $secret): void {
+    public function setTotpSecret(?string $secret): void {
         $this->totpSecret = $secret;
     }
 

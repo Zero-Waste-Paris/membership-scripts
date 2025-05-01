@@ -23,6 +23,7 @@ security:
             provider: app_user_provider
             json_login:
                 check_path: api_login
+                success_handler: App\Totp\AuthenticationSuccessHandler
             logout:
                 path: app_logout
 
@@ -43,8 +44,15 @@ security:
             # switch_user: true
 
             two_factor:
+                # See doc at https://symfony.com/bundles/SchebTwoFactorBundle/current/api.html
+                prepare_on_login: true
+                prepare_on_access_denied: true
+                authentication_required_handler: App\Totp\TwoFactorAuthenticationRequiredHandler 
+                success_handler: App\Totp\TwoFactorAuthenticationSuccessHandler 
+                failure_handler: App\Totp\TwoFactorAuthenticationFailureHandler
                 auth_form_path: 2fa_login
                 check_path: 2fa_login_check
+                auth_code_parameter_name: _auth_code
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used

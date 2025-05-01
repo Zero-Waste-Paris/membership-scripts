@@ -26,6 +26,8 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Psr\Log\LoggerInterface;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Writer\PngWriter;
 
 class TestController extends AbstractController {
 
@@ -44,11 +46,31 @@ class TestController extends AbstractController {
       $this->logger->info("user " . $user->getEmail() . " has already an associated totp secret");
     } else {
       $this->logger->info("setting a totp secret to user " . $user->getEmail());
-      $user->setTotpAuthenticationEnabled(false);
+      $user->setTotpAuthenticationEnabled(true);
       $user->setTotpSecret($this->totp->generateSecret());
       $this->userRepository->saveAndFlush($user);
     }
-    return new Response($this->totp->getQRContent($user));
+
+    return $this->displayQrCode($this->totp->getQRContent($user));
   }
 
+  #[Route("api/test/drop-totp")]
+  public function dropTotp(#[CurrentUser] ?User $user): Response {
+    if ($user === null) {
+      return new Response("not (fully) authentified");
+    }
+    $user->setTotpAuthenticationEnabled(false);
+    $user->setTotpSecret(null);
+    $this->userRepository->saveAndFlush($user);
+
+  }
+
+  private function displayQrCode(string $qrCodeContent): Response
+  {
+    $builder = new Builder(
+      writer: new PngWriter(),
+      data: $qrCodeContent
+    );
+    return new Response($builder->build()->getString(), 200, ['Content-Type' => 'image/png']);
+  }
 }
