@@ -78,6 +78,56 @@ paths:
           description: User is not authenticated
         "403":
           description: currentPassword is incorrect
+  /api/has-totp-enabled:
+    get:
+      summary: finds out whether the user has totp activated
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - enabled
+                properties:
+                  enabled:
+                    type: boolean
+  /api/disable-totp:
+    post:
+      summary: disable totp for the user
+      responses:
+        "204":
+          description: OK
+  /api/generate-totp-secret:
+    post:
+      summary: generates and returns a totp secret for the user (but does not opt-in the user yet)
+      responses:
+        "200":
+          description: QR code that the user should scan
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+  /api/enable-totp:
+    post:
+      summary: enable totp for the user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - totp
+              properties:
+                totp:
+                  type: string
+      responses:
+        "204":
+          description: Totp is successfully enabled for the user
+        "400":
+          description: Totp has not been enabled for the user (probably because the submitted code is not ok)
   /api/members:
     get:
       summary: Get the list of members (both current and former ones)

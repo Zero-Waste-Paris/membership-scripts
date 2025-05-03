@@ -25,7 +25,7 @@ paths:
          content:
            application/json:
              schema:
-               $ref: '#/components/schemas/User'
+               $ref: '#/components/schemas/LoginResult'
        "401":
          description: User failed to logged in (probably bad credentials)
     get:
@@ -36,9 +36,32 @@ paths:
          content:
            application/json:
              schema:
-               $ref: '#/components/schemas/User'
+               $ref: '#/components/schemas/LoginResult'
        "401":
          description: user is not logged in
+  /submit-totp:
+    post:
+      summary: "submit a totp code, for a user that has already validated his or her credentials"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              # should match the schema in the Symfony app security.yaml: auth_code_parameter_name
+              type: object
+              required:
+                - _auth_code
+              properties:
+                _auth_code:
+                  type: string
+      responses:
+        "200":
+          description: The user successfully validated the TOTP code
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/User'
+        "401":
+          description: The totp validation failed
   /logout:
     post:
       summary: destroys the session server-side
@@ -52,6 +75,16 @@ paths:
 
 components:
   schemas:
+    LoginResult:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum: [failureCredentials, missing2FA, failure2FA, success]
+        user:
+          $ref: '#/components/schemas/User'
     User:
       type: object
       required:
