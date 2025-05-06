@@ -18,13 +18,15 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
 	public function onAuthenticationSuccess(Request $request, TokenInterface $token): Response
 	{
 		if ($token instanceof TwoFactorTokenInterface) {
-			return new Response('{"login": "success", "two_factor_complete": false}');
-	    }
+			return new JsonResponse(['status' => 'missing2FA']);
+		}
 
 		// Otherwise return the default response for successful login. could do this by decorating
 		// the original authentication success handler and calling it here.
-        return new JsonResponse(['login' => $token->getUser()->getUserIdentifier()]);
-		return (new ApiLoginController())->successfullLoginResponse($token->User(), $this->csrf);
+		return new JsonResponse([
+			'status' => 'success',
+			'login' => $token->getUser()->getUserIdentifier()
+		]);
 	}
 }
 

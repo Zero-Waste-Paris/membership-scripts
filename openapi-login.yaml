@@ -83,12 +83,5 @@ components:
         status:
           type: string
           enum: [failureCredentials, missing2FA, failure2FA, success]
-        user:
-          $ref: '#/components/schemas/User'
-    User:
-      type: object
-      required:
-        - login
-      properties:
-        login:
+        login: # the login of the user, if the login succeeded
           type: string
