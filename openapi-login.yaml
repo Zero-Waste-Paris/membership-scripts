@@ -59,7 +59,7 @@ paths:
           content:
             application/json:
               schema:
-               $ref: '#/components/schemas/User'
+               $ref: '#/components/schemas/LoginResult'
         "401":
           description: The totp validation failed
   /logout:
