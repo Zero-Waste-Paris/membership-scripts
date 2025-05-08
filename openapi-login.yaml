@@ -11,13 +11,12 @@ paths:
           application/json:
             schema:
               type: object
-              required:
-                - username
-                - password
               properties:
                 username:
                   type: string
                 password:
+                  type: string
+                _auth_code: # should match the schema in the Symfony app security.yaml: auth_code_parameter_name
                   type: string
       responses:
        "200":
@@ -39,29 +38,6 @@ paths:
                $ref: '#/components/schemas/LoginResult'
        "401":
          description: user is not logged in
-  /submit-totp:
-    post:
-      summary: "submit a totp code, for a user that has already validated his or her credentials"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              # should match the schema in the Symfony app security.yaml: auth_code_parameter_name
-              type: object
-              required:
-                - _auth_code
-              properties:
-                _auth_code:
-                  type: string
-      responses:
-        "200":
-          description: The user successfully validated the TOTP code
-          content:
-            application/json:
-              schema:
-               $ref: '#/components/schemas/LoginResult'
-        "401":
-          description: The totp validation failed
   /logout:
     post:
       summary: destroys the session server-side
