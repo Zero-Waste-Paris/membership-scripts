@@ -13,6 +13,6 @@ class TwoFactorAuthenticationRequiredHandler implements AuthenticationRequiredHa
     {
         // Return the response to tell the client that authentication hasn't completed yet and
         // two-factor authentication is required.
-        return new Response('{"error": "access_denied", "two_factor_complete": false}');
+        return new Response('{"error": "access_denied", "two_factor_complete": false}'); // TODO: this does not match the OAS
     }
 }

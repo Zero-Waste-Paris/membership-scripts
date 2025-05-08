@@ -19,6 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 namespace App\Controller;
 
 use OpenAPI\Server\Api\DefaultApiInterface;
+use OpenAPI\Server\Model\ApiEnableTotpPostRequest;
 use OpenAPI\Server\Model\ApiMembersGet200ResponseInner;
 use OpenAPI\Server\Model\ApiUpdateUserPasswordPostRequest;
 use OpenAPI\Server\Model\TimestampedSlackUserList;
@@ -31,7 +32,10 @@ use App\Repository\UserRepository;
 use App\Repository\MemberRepository;
 use App\Entity\Member;
 use App\Entity\MemberAdditionalEmail;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Writer\PngWriter;
 use Psr\Log\LoggerInterface;
+use Scheb\TwoFactorBundle\Security\TwoFactor\Provider\Totp\TotpAuthenticatorInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -49,6 +53,7 @@ class DefaultApi implements DefaultApiInterface {
 		private UserRepository $userRepository,
 		private UserPasswordHasherInterface $passwordHasher,
 		private UrlGeneratorInterface $router,
+		private TotpAuthenticatorInterface $totpAuthenticator,
 		private Security $security, // Wouldn't be needed if we extends AbstractController, but it would make the code harder to test
 	) { }
 
@@ -141,9 +146,70 @@ class DefaultApi implements DefaultApiInterface {
 			return;
 		}
 
-		$this->logger->info("Updateing password");
+		$this->logger->info("Updating password");
 		$this->userRepository->upgradePassword($user, $this->passwordHasher->hashPassword($user, $newPassword));
 	}
+
+	public function apiDisableTotpPost(int &$responseCode, array &$responseHeaders): void {
+		$user = $this->security->getUser();
+		if ($user === null) {
+			$this->logger->info("Cannot disable Totp for an unauthenticated user");
+			$responseCode = 401;
+			return;
+		}
+		$user->disableTotp();
+		$this->userRepository->saveAndFlush($user);
+	}
+
+	public function apiEnableTotpPost(?ApiEnableTotpPostRequest $apiEnableTotpPostRequest, int &$responseCode, array &$responseHeaders): void {
+		$user = $this->security->getUser();
+		if ($user === null) {
+			$this->logger->info("Cannot enable Totp for an unauthenticated user");
+			$responseCode = 401;
+			return;
+		}
+
+		if ($this->totpAuthenticator->checkCode($user, $apiEnableTotpPostRequest->getTotp()) !== true) {
+			$this->logger->info("Totp code does not match, we don't enable totp for this user");
+			$responseCode = 400;
+			return;
+		}
+
+		$user->setTotpAuthenticationEnabled(true);
+		$this->userRepository->saveAndFlush($user);
+	}
+
+	public function apiGenerateTotpSecretPost(int &$responseCode, array &$responseHeaders): array|object|null {
+		$user = $this->security->getUser();
+		if ($user === null) {
+			$this->logger->info("Cannot enable Totp for an unauthenticated user");
+			$responseCode = 401;
+			return null;
+		}
+
+		if ($user->isTotpAuthenticationEnabled()) {
+			$this->logger->info("Totp is already enabled for the user, we do not change the secret");
+			$responseCode = 400;
+			return null;
+		}
+
+		$user->setTotpSecret($this->totpAuthenticator->generateSecret());
+		$this->userRepository->saveAndFlush($user);
+		$builder = new Builder(writer: new PngWriter(), data: $this->totpAuthenticator->getQRContent($user));
+		return $builder->build()->getString();
+	}
+
+	public function apiHasTotpEnabledGet(int &$responseCode, array &$responseHeaders): array|object|null {
+		$user = $this->security->getUser();
+		if ($user === null) {
+			$this->logger->info("Can't check if non authenticated user has totp enabled");
+			$responseCode = 401;
+			return null;
+		}
+
+		return $user->isTotpAuthenticationEnabled();
+	}
+
 
 	private function isTokenOk(string $queryToken, int &$responseCode): bool {
 		if ($queryToken !== $this->params->get("cron.accessToken")) {

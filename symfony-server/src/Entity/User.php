@@ -112,6 +112,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
       $this->totpActivated = $activated;
     }
 
+    public function disableTotp(): void {
+        $this->setTotpAuthenticationEnabled(false);
+        $this->setTotpSecret(null);
+    }
+
     #[ORM\Column(nullable: true)]
     private ?string $totpSecret = null;
     public function getTotpAuthenticationUsername(): string

@@ -2,6 +2,8 @@ openapi: 3.0.3
 info:
   title: ZWP Dashboard
   version: 0.0.1
+servers:
+  - url: http://localhost:8000
 paths:
   /api/trigger-import-run:
     get: # should perhaps be a POST for semantic reasons, but has to be GET in order to be usable by our web cron
@@ -85,14 +87,9 @@ paths:
         "200":
           description: OK
           content:
-            application/json:
+            text/plain:
               schema:
-                type: object
-                required:
-                  - enabled
-                properties:
-                  enabled:
-                    type: boolean
+                type: boolean
   /api/disable-totp:
     post:
       summary: disable totp for the user
@@ -110,6 +107,10 @@ paths:
               schema:
                 type: string
                 format: binary
+        "400":
+          description: user already enabled totp
+        "401":
+          description: user is not authenticated
   /api/enable-totp:
     post:
       summary: enable totp for the user

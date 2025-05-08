@@ -48,8 +48,7 @@ class UserDisableToto extends Command {
 			return Command::SUCCESS;
 		}
 
-		$user->setTotpAuthenticationEnabled(false);
-		$user->setTotpSecret(null);
+		$user->disableTotp();
 		$this->userRepository->saveAndFlush($user);
 
 		return Command::SUCCESS;
