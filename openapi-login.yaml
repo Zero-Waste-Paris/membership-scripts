@@ -11,12 +11,13 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - username
+                - password
               properties:
                 username:
                   type: string
                 password:
-                  type: string
-                _auth_code: # should match the schema in the Symfony app security.yaml: auth_code_parameter_name
                   type: string
       responses:
        "200":
@@ -38,6 +39,19 @@ paths:
                $ref: '#/components/schemas/LoginResult'
        "401":
          description: user is not logged in
+  /2fa_check: # should match the route configured in scheb_2fa.yaml for key 2fa_login_check
+    post:
+      summary: submits the totp code to complete login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - _auth_code: # should match the schema in the Symfony app security.yaml: auth_code_parameter_name
+              properties:
+                _auth_code:
+                  type: string
   /logout:
     post:
       summary: destroys the session server-side
