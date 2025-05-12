@@ -179,7 +179,7 @@ class DefaultApi implements DefaultApiInterface {
 		$this->userRepository->saveAndFlush($user);
 	}
 
-	public function apiGenerateTotpSecretPost(int &$responseCode, array &$responseHeaders): array|object|null {
+	public function apiGenerateTotpSecretPost(int &$responseCode, array &$responseHeaders): mixed {
 		$user = $this->security->getUser();
 		if ($user === null) {
 			$this->logger->info("Cannot enable Totp for an unauthenticated user");
@@ -199,12 +199,12 @@ class DefaultApi implements DefaultApiInterface {
 		return $builder->build()->getString();
 	}
 
-	public function apiHasTotpEnabledGet(int &$responseCode, array &$responseHeaders): array|object|null {
+	public function apiHasTotpEnabledGet(int &$responseCode, array &$responseHeaders): bool {
 		$user = $this->security->getUser();
 		if ($user === null) {
 			$this->logger->info("Can't check if non authenticated user has totp enabled");
 			$responseCode = 401;
-			return null;
+			return false;
 		}
 
 		return $user->isTotpAuthenticationEnabled();
