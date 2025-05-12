@@ -48,10 +48,17 @@ paths:
             schema:
               type: object
               required:
-                - _auth_code: # should match the schema in the Symfony app security.yaml: auth_code_parameter_name
+                - _auth_code # should match the schema in the Symfony app security.yaml: auth_code_parameter_name
               properties:
                 _auth_code:
                   type: string
+      responses:
+       "200":
+         description: The user successfully logged in
+         content:
+           application/json:
+             schema:
+               $ref: '#/components/schemas/LoginResult'
   /logout:
     post:
       summary: destroys the session server-side
