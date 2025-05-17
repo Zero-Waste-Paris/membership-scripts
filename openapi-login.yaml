@@ -58,7 +58,7 @@ paths:
          content:
            application/json:
              schema:
-               $ref: '#/components/schemas/LoginResult'
+               $ref: '#/components/schemas/TotpResult'
   /logout:
     post:
       summary: destroys the session server-side
@@ -79,6 +79,15 @@ components:
       properties:
         status:
           type: string
-          enum: [failureCredentials, missing2FA, failure2FA, success]
+          enum: [failureCredentials, missing2FA, success]
+        login: # the login of the user, if the login succeeded
+          type: string
+    TotpResult:
+      type: object
+      required:
+        - isSuccessful
+      properties:
+        isSuccessful:
+          type: boolean
         login: # the login of the user, if the login succeeded
           type: string

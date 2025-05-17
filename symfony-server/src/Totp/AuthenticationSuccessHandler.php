@@ -24,7 +24,7 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
 		// Otherwise return the default response for successful login. could do this by decorating
 		// the original authentication success handler and calling it here.
 		return new JsonResponse([
-			'status' => 'success',
+			'isSuccessful' => 'success',
 			'login' => $token->getUser()->getUserIdentifier()
 		]);
 	}
