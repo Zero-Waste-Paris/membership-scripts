@@ -14,6 +14,8 @@ class TwoFactorAuthenticationFailureHandler implements AuthenticationFailureHand
     {
         // Return the response to tell the client that 2fa failed. You may want to add more details
         // from the $exception.
-        return new Response('{"error": "2fa_failed", "two_factor_complete": false}'); // TODO: this does not match the OAS
+		return new JsonResponse([
+			'status' => 'failure2FA',
+		]);
    }
 }
