@@ -1,15 +1,18 @@
-<form [formGroup]="credentialsForm" (ngSubmit)="onSubmit()">
-	<div>
-		<label for="username">Login</label>
-		<input id="username" type="text" formControlName="username" autocomplete="on">
-	</div>
+<div *ngIf="!handlingTotp">
+	<form [formGroup]="credentialsForm" (ngSubmit)="onSubmit()">
+		<div>
+			<label for="username">Login</label>
+			<input id="username" type="text" formControlName="username" autocomplete="on">
+		</div>
 
-	<div>
-		<label for="password">Password</label>
-		<input id="password" type="password" formControlName="password" autocomplete="current-password">
-	</div>
+		<div>
+			<label for="password">Password</label>
+			<input id="password" type="password" formControlName="password" autocomplete="current-password">
+		</div>
 
-	<button class="button" type="submit" [disabled]="credentialsBeingProcessed">Login</button>
-</form>
+		<button class="button" type="submit" [disabled]="credentialsBeingProcessed">Login</button>
+	</form>
 
-<div *ngIf="credentialsBeingProcessed"><mat-spinner></mat-spinner></div>
+	<div *ngIf="credentialsBeingProcessed"><mat-spinner></mat-spinner></div>
+</div>
+<app-totp *ngIf="handlingTotp" (totpSuccessful)="totpSuccessful()"></app-totp>
