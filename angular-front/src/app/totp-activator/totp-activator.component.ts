@@ -18,8 +18,9 @@ import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
 })
 export class TotpActivatorComponent implements OnDestroy {
   loading = true;
-  totpAlreadyActivated = false;
+  totpAlreadyActivated: boolean | null = null;
   qrCodeUrl: string | null = null;
+  errorCheckingIfTotpIsEnabled: boolean | null = null;
   totpActivationForm = this.formBuilder.group({
     totpCode: '',
   })
@@ -50,7 +51,12 @@ export class TotpActivatorComponent implements OnDestroy {
     obs.subscribe({
       next(totpAlreadyActivated: boolean) {
         self.loading = false;
+        self.errorCheckingIfTotpIsEnabled = false;
         self.totpAlreadyActivated = totpAlreadyActivated;
+      }, error(err) {
+        self.loading = false;
+        self.errorCheckingIfTotpIsEnabled = true;
+        console.log("failed to find out if the user already has totp enabled: " + JSON.stringify(err));
       }
     });
   }
