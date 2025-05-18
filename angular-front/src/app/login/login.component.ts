@@ -6,14 +6,14 @@ import { LoginPostRequest} from '../generated/login/model/loginPostRequest';
 import { LoginResult } from '../generated/login/model/loginResult';
 import { Observable } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
-import {TotpComponent} from "../totp/totp.component";
+import {TotpLoginComponent} from "../totp-login/totp-login.component";
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   standalone: true,
-    imports: [FormsModule, NgIf, ReactiveFormsModule, MatProgressSpinnerModule, TotpComponent]
+    imports: [FormsModule, NgIf, ReactiveFormsModule, MatProgressSpinnerModule, TotpLoginComponent]
 })
 export class LoginComponent {
 	@Output() loginSuccessful = new EventEmitter();

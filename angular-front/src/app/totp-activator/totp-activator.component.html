@@ -1,0 +1,19 @@
+
+<div *ngIf="totpAlreadyActivated">L'authentification à plusieurs facteurs (TOTP) est déjà activée</div>
+
+<div *ngIf="!totpAlreadyActivated && qrCodeUrl === null">
+  Activer l'authentification à plusieurs facteurs (TOTP) afin d'améliorer la sécurisation de votre compte
+  <button class="button" (click)="initiateTotpActivation()">Go !</button>
+</div>
+
+<div *ngIf="qrCodeUrl !== null">
+  <div>Scannez ce qr code avec votre application d'authentification à deux facteur (par exemple <a href="https://f-droid.org/packages/org.fedorahosted.freeotp/">FreeOTP</a>):</div>
+  <img [src]="qrCodeUrl" alt="Qr code à scanner" />
+  <div>Puis générez un code et saisissez le:</div>
+  <form [formGroup]="totpActivationForm" (ngSubmit)="submitTotpActivationForm()">
+    <input id="totpCode" type="text" formControlName="totpCode" autocomplete="off">
+    <button class="button" type="submit" [disabled]="loading">Valider</button>
+  </form>
+</div>
+
+<mat-spinner *ngIf="loading"></mat-spinner>

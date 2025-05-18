@@ -15,4 +15,4 @@
 
 	<div *ngIf="credentialsBeingProcessed"><mat-spinner></mat-spinner></div>
 </div>
-<app-totp *ngIf="handlingTotp" (totpSuccessful)="totpSuccessful()"></app-totp>
+<app-totp-login *ngIf="handlingTotp" (totpSuccessful)="totpSuccessful()"></app-totp-login>

@@ -7,13 +7,13 @@ import {Model2faCheckPostRequest, TotpResult} from "../generated/login";
 import {Observable} from "rxjs";
 
 @Component({
-  selector: 'app-totp',
+  selector: 'app-totp-login',
   standalone: true,
-  templateUrl: './totp.component.html',
-  styleUrl: './totp.component.css',
+  templateUrl: './totp-login.component.html',
+  styleUrl: './totp-login.component.css',
   imports: [FormsModule, ReactiveFormsModule, MatProgressSpinner, NgIf]
 })
-export class TotpComponent {
+export class TotpLoginComponent {
   @Output() totpSuccessful = new EventEmitter();
   form = this.formBuilder.group({
     totpCode: '',

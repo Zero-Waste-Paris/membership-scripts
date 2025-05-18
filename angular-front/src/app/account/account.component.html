@@ -1,4 +1,4 @@
-<form [formGroup]="newPasswordForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="newPasswordForm" (ngSubmit)="onSubmitNewPasswordForm()">
 	<div>
 		<label for="currentPassword">Mot de passe actuel</label>
 		<input id="currentPassword" type="password" formControlName="currentPassword" autocomplete="off">
@@ -10,4 +10,6 @@
 
 	<button class="button" type="submit" [disabled]="newPasswordSubmitted">Submit</button>
 </form>
+
+<app-totp-activator></app-totp-activator>
 
