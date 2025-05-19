@@ -25,7 +25,7 @@ paths:
          content:
            application/json:
              schema:
-               $ref: '#/components/schemas/User'
+               $ref: '#/components/schemas/LoginResult'
        "401":
          description: User failed to logged in (probably bad credentials)
     get:
@@ -36,9 +36,29 @@ paths:
          content:
            application/json:
              schema:
-               $ref: '#/components/schemas/User'
+               $ref: '#/components/schemas/LoginResult'
        "401":
          description: user is not logged in
+  /2fa_check: # should match the route configured in scheb_2fa.yaml for key 2fa_login_check
+    post:
+      summary: submits the totp code to complete login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - _auth_code # should match the schema in the Symfony app security.yaml: auth_code_parameter_name
+              properties:
+                _auth_code:
+                  type: string
+      responses:
+       "200":
+         description: The user successfully logged in
+         content:
+           application/json:
+             schema:
+               $ref: '#/components/schemas/TotpResult'
   /logout:
     post:
       summary: destroys the session server-side
@@ -52,10 +72,22 @@ paths:
 
 components:
   schemas:
-    User:
+    LoginResult:
       type: object
       required:
-        - login
+        - status
       properties:
-        login:
+        status:
+          type: string
+          enum: [failureCredentials, missing2FA, success]
+        login: # the login of the user, if the login succeeded
+          type: string
+    TotpResult:
+      type: object
+      required:
+        - isSuccessful
+      properties:
+        isSuccessful:
+          type: boolean
+        login: # the login of the user, if the login succeeded
           type: string

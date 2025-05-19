@@ -17,9 +17,10 @@ class ApiLoginController extends AbstractController
 	public function index(#[CurrentUser] ?User $user, CsrfTokenManagerInterface $csrf): JsonResponse
 	{
 		if (null === $user) {
-			return $this->json(['message' => 'missing credentials'], Response::HTTP_UNAUTHORIZED);
+			return $this->json(['status' => 'failureCredentials'], Response::HTTP_UNAUTHORIZED);
 		}
 		$response = $this->json([
+			'status' => 'success',
 			'login' => $user->getUserIdentifier(),
 		]);
 

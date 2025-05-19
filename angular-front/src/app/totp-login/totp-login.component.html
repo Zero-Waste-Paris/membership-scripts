@@ -1,0 +1,13 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="totpCode">Totp code</label>
+    <input id="totpCode" type="text" formControlName="totpCode" autocomplete="false">
+  </div>
+
+
+  <button class="button" type="submit" [disabled]="formBeingProcessed">Login</button>
+</form>
+
+<div *ngIf="formBeingProcessed"><mat-spinner></mat-spinner></div>
+
+<!-- TODO: add a link to log out -->

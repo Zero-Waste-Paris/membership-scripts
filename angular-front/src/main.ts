@@ -12,7 +12,7 @@ import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, RouterModule, Routes } from '@angular/router';
 import { MembersListPageComponent } from './app/members-list-page/members-list-page.component';
-import { PasswordChangerComponent } from './app/password-changer/password-changer.component';
+import { AccountComponent } from './app/account/account.component';
 import { SlackOutdatedComponent } from './app/slack-outdated/slack-outdated.component';
 
 function clientConfigFactory(): Configuration {
@@ -31,7 +31,7 @@ function buildClientsConfigParameters() {
 
 const routes: Routes = [
 	{ path: '', component: MembersListPageComponent },
-	{ path: 'account', component: PasswordChangerComponent },
+	{ path: 'account', component: AccountComponent },
 	{ path: 'unknown-slack-accounts', component: SlackOutdatedComponent },
 ]
 

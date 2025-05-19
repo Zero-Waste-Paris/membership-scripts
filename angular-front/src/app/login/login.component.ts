@@ -3,19 +3,22 @@ import { NgIf } from '@angular/common';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DefaultLoginService } from '../generated/login/api/default.service';
 import { LoginPostRequest} from '../generated/login/model/loginPostRequest';
-import { User } from '../generated/login/model/user';
+import { LoginResult } from '../generated/login/model/loginResult';
 import { Observable } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
+import {TotpLoginComponent} from "../totp-login/totp-login.component";
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.css'],
-    imports: [FormsModule, NgIf, ReactiveFormsModule, MatProgressSpinnerModule]
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css'],
+  standalone: true,
+    imports: [FormsModule, NgIf, ReactiveFormsModule, MatProgressSpinnerModule, TotpLoginComponent]
 })
 export class LoginComponent {
 	@Output() loginSuccessful = new EventEmitter();
 	credentialsBeingProcessed = false;
+	handlingTotp = false;
 
 	credentialsForm = this.formBuilder.group({
 		username: '',
@@ -30,12 +33,22 @@ export class LoginComponent {
 	}
 
 	isLoggedIn() {
-		let obs: Observable<User> = this.loginClient.loginGet();
+		let obs: Observable<LoginResult> = this.loginClient.loginGet();
 		let self = this;
 		obs.subscribe({
-			next(user) {
-				console.log("already logged in as " + user.login);
-				self.loginSuccessful.emit(); // TODO: shall we emit username?
+			next(loginResult) {
+				switch (loginResult.status) {
+					case LoginResult.StatusEnum.Success:
+						console.log("already logged in as " + loginResult.login);
+						self.loginSuccessful.emit();
+						break;
+					case LoginResult.StatusEnum.FailureCredentials:
+						console.log("not logged in yet");
+						break;
+					case LoginResult.StatusEnum.Missing2Fa:
+						self.handlingTotp = true;
+						break;
+				}
 			},
 			error(err) {
 				console.log("Not logged in yet: " + JSON.stringify(err));
@@ -52,11 +65,24 @@ export class LoginComponent {
 
 		let self = this;
 		this.credentialsBeingProcessed = true;
-		let obs: Observable<User> = this.loginClient.loginPost(payload);
+		let obs: Observable<LoginResult> = this.loginClient.loginPost(payload);
 		obs.subscribe({
-			next(user) {
-				console.log("successfully logged in as " + user.login);
-				self.loginSuccessful.emit(); // TODO: shall we emit username?
+			next(loginResult) {
+				switch (loginResult.status) {
+					case LoginResult.StatusEnum.Success:
+						console.log("successfully logged in as " + loginResult.login);
+						self.loginSuccessful.emit(); // TODO: shall we emit username?
+						break;
+					case LoginResult.StatusEnum.FailureCredentials:
+						self.credentialsBeingProcessed = false;
+						const errorMessage = "Failed to log in: invalid credentials";
+						console.log(errorMessage);
+						window.alert(errorMessage);
+						break;
+					case LoginResult.StatusEnum.Missing2Fa:
+						self.handlingTotp = true;
+						break;
+				}
 			},
 			error(err) {
 				self.credentialsBeingProcessed = false;
@@ -64,5 +90,10 @@ export class LoginComponent {
 				window.alert("Authentication failed");
 			}
 		});
+	}
+
+	totpSuccessful() {
+		console.log("Totp successful signal received");
+		this.loginSuccessful.emit();
 	}
 }

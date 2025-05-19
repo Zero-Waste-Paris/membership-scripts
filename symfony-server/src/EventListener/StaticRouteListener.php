@@ -28,6 +28,7 @@ class StaticRouteListener {
 
 	private function isRequestToBeHandledByTheFront(Request $request): bool {
 		return !str_starts_with($request->getPathInfo(), "/api")
+            && !str_starts_with($request->getPathInfo(), "/2fa")
 			&& $request->getPathInfo() !== "/login"
 			&& $request->getPathInfo() !== "/logout";
 	}

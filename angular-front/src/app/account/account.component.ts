@@ -4,14 +4,16 @@ import { Observable } from 'rxjs';
 import { DefaultService } from '../generated/api/api/default.service';
 import { ApiUpdateUserPasswordPostRequest } from '../generated/api/model/apiUpdateUserPasswordPostRequest';
 import { Router } from '@angular/router';
+import {TotpActivatorComponent} from "../totp-activator/totp-activator.component";
 
 @Component({
-    selector: 'app-password-changer',
-    templateUrl: './password-changer.component.html',
-    styleUrls: ['./password-changer.component.css'],
-    imports: [FormsModule, ReactiveFormsModule]
+  selector: 'app-account',
+  templateUrl: './account.component.html',
+  styleUrls: ['./account.component.css'],
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule, TotpActivatorComponent]
 })
-export class PasswordChangerComponent {
+export class AccountComponent {
 	newPasswordSubmitted = false;
 
 	newPasswordForm = this.formBuilder.group({
@@ -25,7 +27,7 @@ export class PasswordChangerComponent {
 		private router: Router,
 	) {}
 
-	onSubmit(): void {
+	onSubmitNewPasswordForm(): void {
 		let formValues = this.newPasswordForm.value;
 		let payload: ApiUpdateUserPasswordPostRequest = {
 			newPassword: formValues.newPassword ?? '',
