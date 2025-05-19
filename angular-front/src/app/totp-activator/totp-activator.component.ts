@@ -52,13 +52,34 @@ export class TotpActivatorComponent implements OnDestroy {
       next(totpAlreadyActivated: boolean) {
         self.loading = false;
         self.errorCheckingIfTotpIsEnabled = false;
-        self.totpAlreadyActivated = totpAlreadyActivated;
+        // Should never occur... but at runtime it occurs all the time (probably an issue with the generated http client)
+        if (typeof totpAlreadyActivated === "string") {
+          let bool = self.toBool(totpAlreadyActivated);
+          if (bool === undefined) {
+            console.error("couldn't cast to bool the value: " + totpAlreadyActivated);
+            window.alert("Une erreur a eu lieu. Plus d'infos dans les logs de votre navigateur");
+            return;
+          }
+          self.totpAlreadyActivated = bool;
+        } else {
+          self.totpAlreadyActivated = totpAlreadyActivated;
+        }
+        console.log("tempGT: response: totpAlreadyActivated=" + totpAlreadyActivated + ", field= " + self.totpAlreadyActivated + ". qrCodeUrl=" + self.qrCodeUrl);
       }, error(err) {
         self.loading = false;
         self.errorCheckingIfTotpIsEnabled = true;
         console.log("failed to find out if the user already has totp enabled: " + JSON.stringify(err));
       }
     });
+  }
+
+  private toBool(value: string): boolean | undefined {
+    try {
+      return JSON.parse(value.toLowerCase());
+    }
+    catch (e) {
+      return undefined;
+    }
   }
 
   initiateTotpActivation() {
