@@ -25,7 +25,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use App\Repository\UserRepository;
 
 #[AsCommand(name: 'user:disable-totp', description: 'Disable TOTP for the given user')]
-class UserDisableToto extends Command {
+class UserDisableTotp extends Command {
 	public function __construct(private UserRepository $userRepository) {
 		parent::__construct();
 	}
