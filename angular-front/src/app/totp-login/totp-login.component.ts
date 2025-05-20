@@ -15,6 +15,7 @@ import {Observable} from "rxjs";
 })
 export class TotpLoginComponent {
   @Output() totpSuccessful = new EventEmitter();
+  @Output() logoutEvent = new EventEmitter();
   form = this.formBuilder.group({
     totpCode: '',
   });
@@ -54,4 +55,10 @@ export class TotpLoginComponent {
       }
     })
   }
+
+  logout() {
+    this.logoutEvent.emit();
+    return false;
+  }
 }
+

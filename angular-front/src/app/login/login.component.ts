@@ -96,4 +96,18 @@ export class LoginComponent {
 		console.log("Totp successful signal received");
 		this.loginSuccessful.emit();
 	}
+
+  logout() {
+    let obs = this.loginClient.logoutPost();
+    obs.subscribe({
+      next() {
+        // Success, nothing to do
+      }, error(err) {
+        console.log("Failed to logout: " + JSON.stringify(err));
+      }
+    })
+    this.credentialsBeingProcessed = false;
+    this.handlingTotp = false;
+    this.credentialsForm.reset();
+  }
 }
