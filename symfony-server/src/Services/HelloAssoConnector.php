@@ -91,7 +91,11 @@ class HelloAssoConnector {
 				'headers' => ["Authorization" => "Bearer $accessToken"],
 		]);
 
-		$json = json_decode($response->getContent(), true);
+		try {
+			$json = json_decode($response->getContent(), true);
+		} catch (ServerException $e) {
+			throw new HelloAssoException($e);
+		}
 
 		if ( $json === NULL ){
 			$error = "failed to parse: " . $raw_content;
