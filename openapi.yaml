@@ -142,7 +142,7 @@ paths:
                 items:
                   type: object
                   required:
-                    - id
+                    - userId
                     - firstName
                     - lastName
                     - email
