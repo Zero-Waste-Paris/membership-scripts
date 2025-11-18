@@ -16,6 +16,8 @@ parameters:
   slack.allowListedDomain: '%env(SLACK_ALLOW_LISTED_DOMAIN)%'
   mailchimp.listUrl: '%env(MC_LIST_URL)%'
   mailchimp.userPassword: '%env(MC_USERPWD)%'
+  brevo.listId: '%env(BREVO_LIST_ID)%'
+  brevo.apiKey: '%env(BREVO_API_KEY)%'
   google.groupName: '%env(GOOGLE_GROUP_NAME)%'
   google.jsonCredentials: '%env(GOOGLE_JSON_CREDENTIALS)%'
   notification.fromEmail: '%env(NOTIFICATION_FROM_EMAIL)%'

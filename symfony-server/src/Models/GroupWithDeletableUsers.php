@@ -21,6 +21,6 @@ namespace App\Models;
 interface GroupWithDeletableUsers
 {
 	public function getUsers(): array;
-	public function deleteUser(string $email, bool $debug): void;
+	public function deleteUsers(array $emails, bool $debug): void;
 	public function groupName(): string;
 }
