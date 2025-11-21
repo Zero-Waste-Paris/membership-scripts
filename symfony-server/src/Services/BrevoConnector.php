@@ -22,6 +22,9 @@ use App\Models\RegistrationEvent;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use App\Models\GroupWithDeletableUsers;
+use Brevo\Client\Configuration;
+use Brevo\Client\Api\ContactsApi;
+use Brevo\Client\Model\CreateContact;
 
 class BrevoConnector implements GroupWithDeletableUsers {
 
@@ -38,10 +41,10 @@ class BrevoConnector implements GroupWithDeletableUsers {
 		$listId = $this->params->get('brevo.listId'); // TODO: set it in the config files
 
 		$apiKey = $this->params->get('brevo.apiKey'); // TODO: set in the config files
-		$config = Brevo\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', $apiKey);
-		$apiInstance = new Brevo\Client\Api\ContactsApi($config);
+		$config = Configuration::getDefaultConfiguration()->setApiKey('api-key', $apiKey);
+		$apiInstance = new ContactsApi(null, $config);
 
-		$createContact = new \Brevo\Client\Model\CreateContact([
+		$createContact = new CreateContact([
 			'email' => $event->email,
 			        //'updateEnabled' => true, // TODO: find out if we need this
 					     //'attributes' => [[ 'FIRSTNAME' => 'Max ', 'LASTNAME' => 'Mustermann', 'isVIP'=> 'true' ]],    // TODO: find out which attributes we should send
