@@ -22,15 +22,14 @@ use App\Models\RegistrationEvent;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use App\Models\GroupWithDeletableUsers;
-use Brevo\Client\Configuration;
-use Brevo\Client\Api\ContactsApi;
-use Brevo\Client\Model\CreateContact;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class BrevoConnector implements GroupWithDeletableUsers {
 
 	public function __construct(
 		private LoggerInterface $logger,
 		private ContainerBagInterface $params,
+		private HttpClientInterface $client,
 		) {}
 
 	function groupName(): string {
@@ -38,32 +37,28 @@ class BrevoConnector implements GroupWithDeletableUsers {
 	}
 
 	public function registerEvent(RegistrationEvent $event, bool $debug): void {
-		$listId = $this->params->get('brevo.listId'); // TODO: set it in the config files
+		$listId = $this->params->get('brevo.listId');
+		$apiKey = $this->params->get('brevo.apiKey');
 
-		$apiKey = $this->params->get('brevo.apiKey'); // TODO: set in the config files
-		$config = Configuration::getDefaultConfiguration()->setApiKey('api-key', $apiKey);
-		$apiInstance = new ContactsApi(null, $config);
+		$payload = array("email" => $event->email, "listIds" => array((int) $listId));
+		$payload_str = json_encode($payload);
 
-		$createContact = new CreateContact([
-			'email' => $event->email,
-			        //'updateEnabled' => true, // TODO: find out if we need this
-					     //'attributes' => [[ 'FIRSTNAME' => 'Max ', 'LASTNAME' => 'Mustermann', 'isVIP'=> 'true' ]],    // TODO: find out which attributes we should send
-						      'listIds' =>[[$listId]]
-		]);
-		try {
-		  // TODO: log instead of performing the action when we we're in debug mode
-		      $result = $apiInstance->createContact($createContact);
-			      print_r($result);
-		} catch (Exception $e) {
-		  // TODO: in case of status 400 and body containing '"code": "duplicate_parameter"' then it's just that the user was already inserted
-		      echo 'Exception when calling ContactsApi->createContact: ', $e->getMessage(), PHP_EOL;
+		if ($debug) {
+			$this->logger->info("Debug mode: we skip Brevo registration");
+		} else {
+			$this->logger->info("Going to register on Brevo user " . $event->first_name . " " . $event->last_name);
+			$response = $this->client->request('POST', "https://api.brevo.com/v3/contacts", [
+				'headers' => ['api-key' => $apiKey, 'content-type' => 'application/json'],
+				'body' => $payload_str
+			]);
+			$response_str = $response->getContent(false);
+			if (str_contains($response_str, "email is already associated with another Contact")) {
+				$this->logger->info("This user was already registered. Moving on");
+			} else if ($response->getStatusCode() != 201) {
+				$this->logger->error("Unexpected answer from Brevo: got: " . $response_str);
+			}
 		}
-
-	  // TODO: POST https://api.brevo.com/v3/contacts 
-	  // {
-	  //   "email": "<mail>",
-	  //     "listIds": [5]
-	  // }
+		$this->logger->info("Done with this registration");
 	}
 
 	public function deleteUser(string $email, bool $debug): void {
