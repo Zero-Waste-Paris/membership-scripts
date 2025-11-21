@@ -25,22 +25,24 @@ use App\Models\GroupWithDeletableUsers;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class BrevoConnector implements GroupWithDeletableUsers {
+	private int $listId;
+	private string $apiKey;
 
 	public function __construct(
 		private LoggerInterface $logger,
 		private ContainerBagInterface $params,
 		private HttpClientInterface $client,
-		) {}
+	) {
+		$this->listId = $this->params->get('brevo.listId');
+		$this->apiKey = $this->params->get('brevo.apiKey');
+	}
 
 	function groupName(): string {
 		return "Brevo";
 	}
 
 	public function registerEvent(RegistrationEvent $event, bool $debug): void {
-		$listId = $this->params->get('brevo.listId');
-		$apiKey = $this->params->get('brevo.apiKey');
-
-		$payload = array("email" => $event->email, "listIds" => array((int) $listId));
+		$payload = array("email" => $event->email, "listIds" => array($this->listId));
 		$payload_str = json_encode($payload);
 
 		if ($debug) {
@@ -48,7 +50,7 @@ class BrevoConnector implements GroupWithDeletableUsers {
 		} else {
 			$this->logger->info("Going to register on Brevo user " . $event->first_name . " " . $event->last_name);
 			$response = $this->client->request('POST', "https://api.brevo.com/v3/contacts", [
-				'headers' => ['api-key' => $apiKey, 'content-type' => 'application/json'],
+				'headers' => ['api-key' => $this->apiKey, 'content-type' => 'application/json'],
 				'body' => $payload_str
 			]);
 			$response_str = $response->getContent(false);
@@ -66,6 +68,11 @@ class BrevoConnector implements GroupWithDeletableUsers {
 	}
 
 	public function getUsers(): array {
-// TODO: GET https://api.brevo.com/v3/contacts
+		$this->logger->info("Going to get Brevo contacts");
+		$response = $this->client->request('GET', "https://api.brevo.com/v3/contacts?listIds=[$this->listId]&limit=1000", [ // In theory we should handle pagination, but in practice, with a limit of 1000 we're safe
+			'headers' => ['api-key' => $this->apiKey],
+		]);
+		$responseObj = json_decode($response->getContent());
+		return array_map(fn($contact): string => $contact->email, $responseObj->contacts);
 	}
 }
