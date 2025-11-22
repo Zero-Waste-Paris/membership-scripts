@@ -63,7 +63,7 @@ class BrevoConnector implements GroupWithDeletableUsers {
 		$this->logger->info("Done with this registration");
 	}
 
-	public function deleteUser(string $email, bool $debug): void {
+	public function deleteUsers(array $emails, bool $debug): void {
 		// TODO: DELETE https://api.brevo.com/v3/contacts/<mail>
 	}
 

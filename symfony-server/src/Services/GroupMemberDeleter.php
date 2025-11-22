@@ -41,11 +41,17 @@ class GroupMemberDeleter {
 	}
 
 	private function deleteOutdatedMembersFromGroup(array $lowercasedEmailsToKeep, GroupWithDeletableUsers $group, bool $debug) {
+		$group->deleteUsers($this->getUsersToDelete($lowercasedEmailsToKeep, $group));
+	}
+
+	private function getUsersToDelete(array $lowercasedEmailsToKeep, GroupWithDeletableUsers $group): array {
+		$usersToDelete = array();
 		foreach($group->getUsers() as $existingUser) {
 			if (!in_array(strtolower($existingUser), $lowercasedEmailsToKeep)) {
-				$this->logger->info("Going to delete $existingUser from " . $group->groupName());
-				$group->deleteUser($existingUser, $debug);
+				$this->logger->info("Will delete $existingUser from " . $group->groupName());
+				$usersToDelete []= $existingUser;
 			}
 		}
+		return $usersToDelete;
 	}
 }

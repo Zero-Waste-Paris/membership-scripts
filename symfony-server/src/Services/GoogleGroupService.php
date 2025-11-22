@@ -85,6 +85,12 @@ class GoogleGroupService implements GroupWithDeletableUsers {
 		}
 	}
 
+	function deleteUsers(array $emails, bool $debug): void {
+		foreach($emails as $email) {
+			$this->deleteUser($email, $debug);
+		}
+	}
+
 	function deleteUser(string $email, bool $debug): void{
 		$this->logger->info("Going to delete from " . $this->groupName . " the email " . $email);
 		if ($debug) {
