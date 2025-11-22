@@ -67,6 +67,19 @@ class BrevoConnector implements GroupWithDeletableUsers {
 		// TODO: DELETE https://api.brevo.com/v3/contacts/<mail>
 	}
 
+	function removeFromList(string $email, bool $debug): void {
+		$payload_str = json_encode(array("unlinkListIds" => array($this->listId)));
+		if ($debug) {
+			$this->logger->info("Not removing $email from $this->listId because we're in debug mode");
+		} else {
+			$this->client->request('PUT', "https://api.brevo.com/v3/contacts/$email", [
+				'headers' => ['api-key' => $this->apiKey, 'content-type' => 'application/json'],
+				'body' => $payload_str,
+			])->getContent(); // No content is expected, but this call should throw in case of error
+		}
+
+	}
+
 	public function getUsers(): array {
 		$this->logger->info("Going to get Brevo contacts");
 		$response = $this->client->request('GET', "https://api.brevo.com/v3/contacts?listIds=[$this->listId]&limit=1000", [ // In theory we should handle pagination, but in practice, with a limit of 1000 we're safe
