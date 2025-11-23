@@ -26,7 +26,7 @@ final class GroupMemberDeleterTest extends KernelTestCase {
 		]);
 
 		// Setup the main assertion
-		$group->expects(self::once())->method('deleteUser')->with($this->equalTo('someUserToDelete@mail.com'));
+		$group->expects(self::once())->method('deleteUsers')->with($this->equalTo(['someUserToDelete@mail.com']));
 
 		// Act
 		$sut = self::getContainer()->get(GroupMemberDeleter::class);
