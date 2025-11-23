@@ -92,6 +92,7 @@
         "symfony/browser-kit": "7.3.*",
         "symfony/css-selector": "7.3.*",
         "symfony/maker-bundle": "^1.49",
-        "symfony/phpunit-bridge": "^7.3"
+        "symfony/phpunit-bridge": "^7.3",
+        "wiremock-php/wiremock-php": "2.35.3"
     }
 }

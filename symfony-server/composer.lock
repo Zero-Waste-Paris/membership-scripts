@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "59f7ba3fd7fb435caaf95d911ad48d4b",
+    "content-hash": "6f7aff82bfb6fab5bebeee2b977ec169",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -11397,6 +11397,58 @@
                 }
             ],
             "time": "2025-11-13T13:44:09+00:00"
+        },
+        {
+            "name": "wiremock-php/wiremock-php",
+            "version": "2.35.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rowanhill/wiremock-php.git",
+                "reference": "f3dcb2415a25f3c64762cf64a3b4f6cd5378e3ba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rowanhill/wiremock-php/zipball/f3dcb2415a25f3c64762cf64a3b4f6cd5378e3ba",
+                "reference": "f3dcb2415a25f3c64762cf64a3b4f6cd5378e3ba",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "hamcrest/hamcrest-php": "^2.0",
+                "phake/phake": "^4.5",
+                "phpdocumentor/reflection-docblock": "^5.3",
+                "phpdocumentor/type-resolver": "^1.6",
+                "phpunit/phpunit": "^8.5"
+            },
+            "suggest": {
+                "phpunit/phpunit": "Thrown VerificationExceptions automatically fail tests"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "WireMock\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rowan Hill"
+                }
+            ],
+            "description": "PHP API for WireMock JSON interface",
+            "homepage": "http://github.com/rowanhill/wiremock-php",
+            "support": {
+                "issues": "https://github.com/rowanhill/wiremock-php/issues",
+                "source": "https://github.com/rowanhill/wiremock-php/tree/2.35.3"
+            },
+            "time": "2025-03-14T14:53:41+00:00"
         }
     ],
     "aliases": [],
