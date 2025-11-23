@@ -55,7 +55,8 @@ class BrevoConnector implements GroupWithDeletableUsers {
 			]);
 			$response_str = $response->getContent(false);
 			if (str_contains($response_str, "email is already associated with another Contact")) {
-				$this->logger->info("This user was already registered. Moving on");
+				$this->logger->info("This user was already registered. Not sure if they already are in the list so we try to add them");
+				$this->addToList($event-email, $debug);
 			} else if ($response->getStatusCode() != 201) {
 				$this->logger->error("Unexpected answer from Brevo: got: " . $response_str);
 			}
@@ -71,6 +72,18 @@ class BrevoConnector implements GroupWithDeletableUsers {
 		$payload_str = json_encode(array("unlinkListIds" => array($this->listId)));
 		if ($debug) {
 			$this->logger->info("Not removing $email from $this->listId because we're in debug mode");
+		} else {
+			$this->client->request('PUT', "https://api.brevo.com/v3/contacts/$email", [
+				'headers' => ['api-key' => $this->apiKey, 'content-type' => 'application/json'],
+				'body' => $payload_str,
+			])->getContent(); // No content is expected, but this call should throw in case of error
+		}
+	}
+
+	function addToList(string $email, bool $debug): void {
+		$payload_str = json_encode(array("listIds" => array($this->listId)));
+		if ($debug) {
+			$this->logger->info("Not adding $email to $this->listId because we're in debug mode");
 		} else {
 			$this->client->request('PUT', "https://api.brevo.com/v3/contacts/$email", [
 				'headers' => ['api-key' => $this->apiKey, 'content-type' => 'application/json'],
