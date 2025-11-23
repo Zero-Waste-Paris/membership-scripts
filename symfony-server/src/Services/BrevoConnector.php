@@ -106,7 +106,6 @@ class BrevoConnector implements GroupWithDeletableUsers {
 				$this->logger->error("Failed to delete Brevo contact $email: got http status $status and response $content");
 			}
 		}
-				// TODO: DELETE https://api.brevo.com/v3/contacts/<mail>
 	}
 
 	function removeFromList(string $email, bool $debug): void {
