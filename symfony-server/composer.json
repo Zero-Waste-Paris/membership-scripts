@@ -15,7 +15,6 @@
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^2.15",
         "endroid/qr-code": "^6.0",
-        "getbrevo/brevo-php": "2.0.4",
         "google/apiclient": "^2.18",
         "google/auth": "^1.47",
         "jolicode/slack-php-api": "^4.8",
