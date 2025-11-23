@@ -65,7 +65,48 @@ class BrevoConnector implements GroupWithDeletableUsers {
 	}
 
 	public function deleteUsers(array $emails, bool $debug): void {
-		// TODO: DELETE https://api.brevo.com/v3/contacts/<mail>
+		$listsPerUsers = $this->getListPerAllUsers();
+		foreach($emails as $email) {
+			if ( ! array_key_exists($email, $listsPerUsers)) {
+				$this->logger->warn("$email does not seem to be an existing Brevo user, this isn't supposed to occur. Moving on.");
+			}
+			$lists = $listsPerUsers[$email];
+			if (count($lists) == 0) {
+				$this->logger->warn("We're considering deleting $email but they are in no lists, this isn't supposed to occur. Moving on.");
+				continue;
+			}
+			if (!in_array($this->listId, $lists)) {
+				$this->logger->warn("We're considering deleting $email but they are not in list $this->listId, this isn't supposed to occur. Moving on.");
+				continue;
+			}
+			if (count($lists) == 1) {
+				$this->logger->info("$email is only in list $this->listId, we delete the contact from Brevo altogether");
+				$this->deleteContact($email, $debug);
+			} else {
+				$this->logger->info("$user is in list $this->listId but also in other lists, so only unlink this list");
+				$this->removeFromList($user, $debug);
+			}
+		}
+	}
+
+	function deleteContact($email, bool $debug): void {
+		if ($debug) {
+			$this->logger->info("Debug mode, we won't delete contact $email");
+		} else {
+			$response = $this->client->request('DELETE', "https://api.brevo.com/v3/contacts/$email", [
+				'headers' => ['api-key' => $this->apiKey, 'content-type' => 'application/json'],
+			]);
+			$content = $response->getContent(false);
+			$status = $response->getStatusCode();
+			if ($status == 204) {
+				$this->logger->info("Successfully deleted Brevo contact $email");
+			} else if ($status == 404 && str_contains($content, "Contact does not exist")) {
+				$this->logger->info("Could not delete Brevo contact $email because it does not exist");
+			} else {
+				$this->logger->error("Failed to delete Brevo contact $email: got http status $status and response $content");
+			}
+		}
+				// TODO: DELETE https://api.brevo.com/v3/contacts/<mail>
 	}
 
 	function removeFromList(string $email, bool $debug): void {
@@ -90,15 +131,30 @@ class BrevoConnector implements GroupWithDeletableUsers {
 				'body' => $payload_str,
 			])->getContent(); // No content is expected, but this call should throw in case of error
 		}
+	}
 
+	private function getListsPerAllUsers() {
+		$allUsers = $this->getContacts(false);
+		$result = array();
+		foreach($allUsers as $user) {
+			$result[$user->email] = $user->listIds;
+		}
+		return $result;
 	}
 
 	public function getUsers(): array {
+		return array_map(fn($contact): string => $contact->email, $this->getContacts(true));
+	}
+
+	private function getContacts(bool $filterOnList): array {
+		$url =  "https://api.brevo.com/v3/contacts?&limit=1000";// In theory we should handle pagination, but in practice, with a limit of 1000 we're safe
+		if ($filterOnList) {
+			$url .= "&listIds=[$this->listId]";
+		}
 		$this->logger->info("Going to get Brevo contacts");
-		$response = $this->client->request('GET', "https://api.brevo.com/v3/contacts?listIds=[$this->listId]&limit=1000", [ // In theory we should handle pagination, but in practice, with a limit of 1000 we're safe
+		$response = $this->client->request('GET', "https://api.brevo.com/v3/contacts?listIds=[$this->listId]&limit=1000", [ 
 			'headers' => ['api-key' => $this->apiKey],
 		]);
-		$responseObj = json_decode($response->getContent());
-		return array_map(fn($contact): string => $contact->email, $responseObj->contacts);
+		return json_decode($response->getContent()->contacts);
 	}
 }
