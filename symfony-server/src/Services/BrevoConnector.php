@@ -42,7 +42,7 @@ class BrevoConnector implements GroupWithDeletableUsers {
 	}
 
 	public function registerEvent(RegistrationEvent $event, bool $debug): void {
-		$payload = array("email" => $event->email, "listIds" => array($this->listId));
+		$payload = array_merge(["email" => $event->email, "listIds" => [$this->listId]], $this->buildAttributesPayload($event));
 		$payload_str = json_encode($payload);
 
 		if ($debug) {
@@ -56,12 +56,20 @@ class BrevoConnector implements GroupWithDeletableUsers {
 			$response_str = $response->getContent(false);
 			if (str_contains($response_str, "email is already associated with another Contact")) {
 				$this->logger->info("This user was already registered. Not sure if they already are in the list so we try to add them");
-				$this->addToList($event-email, $debug);
+				$this->addToListAndSetNames($event, $debug);
 			} else if ($response->getStatusCode() != 201) {
 				$this->logger->error("Unexpected answer from Brevo: got: " . $response_str);
 			}
 		}
 		$this->logger->info("Done with this registration");
+	}
+
+
+	private function buildAttributesPayload(RegistrationEvent $event): array {
+		return ["attributes" => [
+			"FIRSTNAME" => $event->first_name,
+			"LASTNAME" => $event->last_name
+		]];
 	}
 
 	public function deleteUsers(array $emails, bool $debug): void {
@@ -120,8 +128,9 @@ class BrevoConnector implements GroupWithDeletableUsers {
 		}
 	}
 
-	function addToList(string $email, bool $debug): void {
-		$payload_str = json_encode(array("listIds" => array($this->listId)));
+	function addToListAndSetNames(RegistrationEvent $event, bool $debug): void {
+		$email = $event->email;
+		$payload_str = json_encode(array_merge(["listIds" => [$this->listId]], $this->buildAttributesPayload($event)));
 		if ($debug) {
 			$this->logger->info("Not adding $email to $this->listId because we're in debug mode");
 		} else {
