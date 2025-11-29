@@ -33,7 +33,7 @@ class BrevoConnector implements GroupWithDeletableUsers {
 		private ContainerBagInterface $params,
 		private HttpClientInterface $client,
 	) {
-		$this->listId = $this->params->get('brevo.listId');
+		$this->listId = (int) $this->params->get('brevo.listId');
 		$this->apiKey = $this->params->get('brevo.apiKey');
 	}
 
