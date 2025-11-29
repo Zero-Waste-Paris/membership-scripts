@@ -73,7 +73,7 @@ class BrevoConnector implements GroupWithDeletableUsers {
 	}
 
 	public function deleteUsers(array $emails, bool $debug): void {
-		$listsPerUsers = $this->getListPerAllUsers();
+		$listsPerUsers = $this->getListsPerAllUsers();
 		foreach($emails as $email) {
 			if ( ! array_key_exists($email, $listsPerUsers)) {
 				$this->logger->warn("$email does not seem to be an existing Brevo user, this isn't supposed to occur. Moving on.");
@@ -163,6 +163,6 @@ class BrevoConnector implements GroupWithDeletableUsers {
 		$response = $this->client->request('GET', "https://api.brevo.com/v3/contacts?listIds=[$this->listId]&limit=1000", [ 
 			'headers' => ['api-key' => $this->apiKey],
 		]);
-		return json_decode($response->getContent()->contacts);
+		return json_decode($response->getContent())->contacts;
 	}
 }
