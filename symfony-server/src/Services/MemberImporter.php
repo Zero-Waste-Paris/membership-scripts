@@ -32,6 +32,7 @@ class MemberImporter {
 		private LoggerInterface $logger,
 		private OptionsRepository $optionRepository,
 		private HelloAssoConnector $helloassoConnector,
+		private BrevoConnector $brevoConnector,
 		private MemberRepository $memberRepository,
 		private MailchimpConnector $mailchimpConnector,
 		private GoogleGroupService $googleConnector,
@@ -57,6 +58,7 @@ class MemberImporter {
 				$this->memberRepository->addOrUpdateMember($subscription, $debug);
 				$this->mailchimpConnector->registerEvent($subscription, $debug);
 				$this->googleConnector->registerEvent($subscription, $debug);
+				$this->brevoConnector->registerEvent($subscription, $debug);
 			}
 			$this->deleteOutdatedMembersIfNeeded($lastSuccessfulRunDate, $debug);
 
@@ -120,7 +122,7 @@ class MemberImporter {
 
 		$this->groupMemberDeleter->deleteOutdatedMembersFromGroups(
 				array_map(fn(Member $m) => $m->getEmail(), $this->memberRepository->getAllUpToDateMembers()),
-				[$this->googleConnector, $this->mailchimpConnector],
+				[$this->googleConnector, $this->mailchimpConnector, $this->brevoConnector],
 				$debug);
 	}
 }
