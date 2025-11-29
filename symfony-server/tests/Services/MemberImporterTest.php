@@ -13,6 +13,7 @@ use App\Entity\Member;
 use App\Models\RegistrationEvent;
 use App\Repository\MemberRepository;
 use App\Repository\OptionsRepository;
+use App\Services\BrevoConnector;
 use App\Services\MemberImporter;
 use App\Services\HelloAssoConnector;
 use App\Services\MailchimpConnector;
@@ -31,6 +32,7 @@ final class MemberImporterTest extends KernelTestCase {
 	private HelloAssoConnector $helloAssoMock;
 	private GoogleGroupService $googleMock;
 	private MailchimpConnector $mailchimpMock;
+	private BrevoConnector $brevoMock;
 	private NowProvider $nowProviderMock;
 	private LoggerInterface $loggerMock;
 	private ContainerBagInterface $paramsMock;
@@ -50,6 +52,7 @@ final class MemberImporterTest extends KernelTestCase {
 		$this->helloAssoMock   = $this->createMock(HelloAssoConnector::class);
 		$this->googleMock      = $this->createMock(GoogleGroupService::class);
 		$this->mailchimpMock   = $this->createMock(MailchimpConnector::class);
+		$this->brevoMock       = $this->createMock(BrevoConnector::class);
 		$this->nowProviderMock = $this->createMock(NowProvider::class);
 		$this->loggerMock      = $this->createMock(LoggerInterface::class);
 		$this->paramsMock      = $this->createMock(ContainerBagInterface::class);
@@ -66,6 +69,7 @@ final class MemberImporterTest extends KernelTestCase {
 		self::getContainer()->set(HelloAssoConnector::class, $this->helloAssoMock);
 		self::getContainer()->set(GooGleGroupService::class, $this->googleMock);
 		self::getContainer()->set(MailchimpConnector::class, $this->mailchimpMock);
+		self::getContainer()->set(BrevoConnector::class,     $this->brevoMock);
 		self::getContainer()->set(NowProvider::class,        $this->nowProviderMock);
 		self::getContainer()->set(LoggerInterface::class,    $this->loggerMock);
 		self::getContainer()->set(ContainerBagInterface::class, $this->paramsMock);
@@ -203,6 +207,7 @@ final class MemberImporterTest extends KernelTestCase {
 		$this->helloAssoMock->expects(self::once())->method('getAllHelloAssoSubscriptions')->willReturn([$expected]);
 		$this->googleMock->expects(self::once())->method('registerEvent')->with(new ObjectEquals($expected));
 		$this->mailchimpMock->expects(self::once())->method('registerEvent')->with(new ObjectEquals($expected));
+		$this->brevoMock->expects(self::once())->method('registerEvent')->with(new ObjectEquals($expected));
 		$this->memberRepoMock->expects(self::once())->method('addOrUpdateMember')->with(new ObjectEquals($expected));
 	}
 
@@ -210,6 +215,7 @@ final class MemberImporterTest extends KernelTestCase {
 		$this->helloAssoMock->expects(self::once())->method('getAllHelloAssoSubscriptions')->willReturn([]);
 		$this->googleMock->expects(self::never())->method('registerEvent');
 		$this->mailchimpMock->expects(self::never())->method('registerEvent');
+		$this->brevoMock->expects(self::never())->method('registerEvent');
 		$this->memberRepoMock->expects(self::never())->method('addOrUpdateMember');
 	}
 
@@ -226,8 +232,9 @@ final class MemberImporterTest extends KernelTestCase {
 
 	private function expectsOldMembersAreNotDeleted(): void {
 		$this->memberRepoMock->expects(self::never())->method('deleteMembersOlderThan');
-		$this->googleMock->expects(self::never())->method('deleteUser');
-		$this->mailchimpMock->expects(self::never())->method('deleteUser');
+		$this->googleMock->expects(self::never())->method('deleteUsers');
+		$this->mailchimpMock->expects(self::never())->method('deleteUsers');
+		$this->brevoMock->expects(self::never())->method('deleteUsers');
 	}
 
 	private function runAndExpectHelloassoErrorToBeRethrown(): void {
