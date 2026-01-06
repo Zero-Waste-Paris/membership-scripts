@@ -121,6 +121,7 @@ class HelloAssoConnector {
 		// placeholder initialization for the fields that disappeared in the current 2026 form, until we find out the proper way to handle it
 		$result->want_to_do = "N/A";
 		$result->is_zw_professional = "Non";
+		$result->how_did_you_know_zwp = "";
 		// end of ad hoc initialization for 2026 form
 		foreach($jsonRegistration["customFields"] as $customField){
 			switch($customField["name"]){
