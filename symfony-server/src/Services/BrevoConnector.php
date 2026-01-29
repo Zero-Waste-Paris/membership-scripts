@@ -58,7 +58,9 @@ class BrevoConnector implements GroupWithDeletableUsers {
 				$this->logger->info("This user was already registered. Not sure if they already are in the list so we try to add them");
 				$this->addToListAndSetNames($event, $debug);
 			} else if ($response->getStatusCode() != 201) {
-				$this->logger->error("Unexpected answer from Brevo: got: " . $response_str);
+				$error = "Unexpected answer from Brevo: got: " . $response_str;
+				$this->logger->error($error);
+				throw new Exception($error);
 			}
 		}
 		$this->logger->info("Done with this registration");
