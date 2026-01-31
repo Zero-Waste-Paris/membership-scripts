@@ -2,7 +2,7 @@ import {Component, EventEmitter, Output} from '@angular/core';
 import { DefaultLoginService } from '../generated/login/api/default.service';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
-import {NgIf} from "@angular/common";
+
 import {Model2faCheckPostRequest, TotpResult} from "../generated/login";
 import {Observable} from "rxjs";
 
@@ -11,7 +11,7 @@ import {Observable} from "rxjs";
   standalone: true,
   templateUrl: './totp-login.component.html',
   styleUrl: './totp-login.component.css',
-  imports: [FormsModule, ReactiveFormsModule, MatProgressSpinner, NgIf]
+  imports: [FormsModule, ReactiveFormsModule, MatProgressSpinner]
 })
 export class TotpLoginComponent {
   @Output() totpSuccessful = new EventEmitter();

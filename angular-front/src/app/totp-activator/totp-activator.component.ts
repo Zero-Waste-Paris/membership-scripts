@@ -1,6 +1,6 @@
 import {Component, OnDestroy} from '@angular/core';
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
-import {NgIf} from "@angular/common";
+
 import {ApiEnableTotpPostRequest, DefaultService} from "../generated/api";
 import {Observable} from "rxjs";
 import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
@@ -10,9 +10,8 @@ import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
   standalone: true,
   imports: [
     MatProgressSpinner,
-    NgIf,
     ReactiveFormsModule
-  ],
+],
   templateUrl: './totp-activator.component.html',
   styleUrl: './totp-activator.component.css'
 })

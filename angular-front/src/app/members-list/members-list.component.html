@@ -1,53 +1,55 @@
 <table mat-table [dataSource]="membersDataSource" matSort>
-	<ng-container matColumnDef="lastRegistrationDate">
-		<th mat-header-cell *matHeaderCellDef mat-sort-header>Dernière adhésion</th>
-		<td mat-cell *matCellDef="let member">{{member.lastRegistrationDate}}</td>
-	</ng-container>
-	<ng-container matColumnDef="firstName">
-		<th mat-header-cell *matHeaderCellDef mat-sort-header>Nom</th>
-		<td mat-cell *matCellDef="let member">{{member.firstName}} {{member.lastName}}</td>
-	</ng-container>
-	<ng-container matColumnDef="email">
-		<th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
-		<td mat-cell *matCellDef="let member">{{member.email}}</td>
-	</ng-container>
-	<ng-container matColumnDef="postalCode">
-		<th mat-header-cell *matHeaderCellDef mat-sort-header>Localisation</th>
-		<td mat-cell *matCellDef="let member">{{member.city}} {{member.postalCode}}</td>
-	</ng-container>
-	<ng-container matColumnDef="wantToDo">
-		<th mat-header-cell *matHeaderCellDef mat-sort-header>Intérêt pour</th>
-		<td mat-cell *matCellDef="let member">{{member.wantToDo}}</td>
-	</ng-container>
-	<ng-container matColumnDef="howDidYouKnowZwp">
-		<th mat-header-cell *matHeaderCellDef mat-sort-header>A connu l'asso</th>
-		<td mat-cell *matCellDef="let member">{{member.howDidYouKnowZwp}}</td>
-	</ng-container>
-	<ng-container matColumnDef="firstRegistrationDate">
-		<th mat-header-cell *matHeaderCellDef mat-sort-header>Plus ancienne adhésion connue</th>
-		<td mat-cell *matCellDef="let member">{{member.firstRegistrationDate}}</td>
-	</ng-container>
-	<ng-container matColumnDef="isZWProfessional">
-		<th mat-header-cell *matHeaderCellDef mat-sort-header>Porte un projet ZD pro</th>
-		<td mat-cell *matCellDef="let member">{{member.isZWProfessional}}</td>
-	</ng-container>
-	<ng-container matColumnDef="phone">
-		<th mat-header-cell *matHeaderCellDef mat-sort-header>Téléphone</th>
-		<td mat-cell *matCellDef="let member">{{member.phone}}</td>
-	</ng-container>
-	<ng-container matColumnDef="additionalEmails">
-		<th mat-header-cell *matHeaderCellDef>emails secondaires</th>
-		<td mat-cell *matCellDef="let member">
-			<span *ngFor="let email of member.additionalEmails">{{email}}, </span>
-		</td>
-	</ng-container>
+  <ng-container matColumnDef="lastRegistrationDate">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Dernière adhésion</th>
+    <td mat-cell *matCellDef="let member">{{member.lastRegistrationDate}}</td>
+  </ng-container>
+  <ng-container matColumnDef="firstName">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Nom</th>
+    <td mat-cell *matCellDef="let member">{{member.firstName}} {{member.lastName}}</td>
+  </ng-container>
+  <ng-container matColumnDef="email">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+    <td mat-cell *matCellDef="let member">{{member.email}}</td>
+  </ng-container>
+  <ng-container matColumnDef="postalCode">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Localisation</th>
+    <td mat-cell *matCellDef="let member">{{member.city}} {{member.postalCode}}</td>
+  </ng-container>
+  <ng-container matColumnDef="wantToDo">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Intérêt pour</th>
+    <td mat-cell *matCellDef="let member">{{member.wantToDo}}</td>
+  </ng-container>
+  <ng-container matColumnDef="howDidYouKnowZwp">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>A connu l'asso</th>
+    <td mat-cell *matCellDef="let member">{{member.howDidYouKnowZwp}}</td>
+  </ng-container>
+  <ng-container matColumnDef="firstRegistrationDate">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Plus ancienne adhésion connue</th>
+    <td mat-cell *matCellDef="let member">{{member.firstRegistrationDate}}</td>
+  </ng-container>
+  <ng-container matColumnDef="isZWProfessional">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Porte un projet ZD pro</th>
+    <td mat-cell *matCellDef="let member">{{member.isZWProfessional}}</td>
+  </ng-container>
+  <ng-container matColumnDef="phone">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>Téléphone</th>
+    <td mat-cell *matCellDef="let member">{{member.phone}}</td>
+  </ng-container>
+  <ng-container matColumnDef="additionalEmails">
+    <th mat-header-cell *matHeaderCellDef>emails secondaires</th>
+    <td mat-cell *matCellDef="let member">
+      @for (email of member.additionalEmails; track email) {
+        <span>{{email}}, </span>
+      }
+    </td>
+  </ng-container>
 
-	<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-	<tr
-		mat-row
-		*matRowDef="let row; columns: displayedColumns;"
-		[class.row-member-up-to-date] = "row.isRegistrationUpToDate"
-		[class.row-member-outdated]   = "!row.isRegistrationUpToDate"
-	></tr>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr
+    mat-row
+    *matRowDef="let row; columns: displayedColumns;"
+    [class.row-member-up-to-date] = "row.isRegistrationUpToDate"
+    [class.row-member-outdated]   = "!row.isRegistrationUpToDate"
+  ></tr>
 
 </table>

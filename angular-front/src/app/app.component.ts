@@ -4,14 +4,14 @@ import { DefaultLoginService } from './generated/login/api/default.service';
 import { RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
 import { LoginComponent } from './login/login.component';
-import { NgIf } from '@angular/common';
+
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   standalone: true,
-  imports: [NgIf, LoginComponent, RouterModule]
+  imports: [LoginComponent, RouterModule]
 })
 export class AppComponent {
 	loggedIn = false; // TODO: also get the name somehow?

@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { NgIf } from '@angular/common';
+
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DefaultLoginService } from '../generated/login/api/default.service';
 import { LoginPostRequest} from '../generated/login/model/loginPostRequest';
@@ -13,7 +13,7 @@ import {TotpLoginComponent} from "../totp-login/totp-login.component";
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   standalone: true,
-    imports: [FormsModule, NgIf, ReactiveFormsModule, MatProgressSpinnerModule, TotpLoginComponent]
+    imports: [FormsModule, ReactiveFormsModule, MatProgressSpinnerModule, TotpLoginComponent]
 })
 export class LoginComponent {
 	@Output() loginSuccessful = new EventEmitter();

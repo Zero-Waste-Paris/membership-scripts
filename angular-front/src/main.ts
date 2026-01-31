@@ -1,6 +1,6 @@
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
-import { importProvidersFrom } from '@angular/core';
+import { importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 import { AppComponent } from './app/app.component';
 import { LoginApiModule } from './app/generated/login/api.module';
 import { Configuration as LoginConfiguration } from './app/generated/login/configuration';
@@ -37,7 +37,7 @@ const routes: Routes = [
 
 bootstrapApplication(AppComponent, {
 	providers: [
-		importProvidersFrom(BrowserModule, FormsModule, ReactiveFormsModule, ApiModule.forRoot(clientConfigFactory), LoginApiModule.forRoot(loginClientConfigFactory)),
+		provideZoneChangeDetection(),importProvidersFrom(BrowserModule, FormsModule, ReactiveFormsModule, ApiModule.forRoot(clientConfigFactory), LoginApiModule.forRoot(loginClientConfigFactory)),
 		provideHttpClient(withInterceptorsFromDi()),
 		provideAnimations(),
 		provideRouter(routes),

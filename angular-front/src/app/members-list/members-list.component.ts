@@ -1,12 +1,12 @@
 import { Component, Input, ViewChild, AfterViewInit } from '@angular/core';
-import { NgFor } from '@angular/common';
+
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { ApiMembersGet200ResponseInner } from '../generated/api/model/apiMembersGet200ResponseInner';
 
 @Component({
   selector: 'app-members-list',
-  imports: [MatTableModule, MatSortModule, NgFor],
+  imports: [MatTableModule, MatSortModule],
   templateUrl: './members-list.component.html',
   standalone: true,
   styleUrl: './members-list.component.css'

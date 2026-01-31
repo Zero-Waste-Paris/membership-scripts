@@ -10,4 +10,6 @@
 
 <a href="" (click)="logout()">Abandonner</a>
 
-<div *ngIf="formBeingProcessed"><mat-spinner></mat-spinner></div>
+@if (formBeingProcessed) {
+  <div><mat-spinner></mat-spinner></div>
+}

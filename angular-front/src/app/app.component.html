@@ -1,14 +1,14 @@
-<app-login *ngIf="!loggedIn; else isLoggedIn" (loginSuccessful)="loginInitializedEventReceived()"></app-login>
+@if (!loggedIn) {
+  <app-login (loginSuccessful)="loginInitializedEventReceived()"></app-login>
+} @else {
+  <nav>
+    <ul class="menu">
+      <li routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/" ariaCurrentWhenActive="page">Membres</a></li>
+      <li routerLinkActive="active"><a routerLink="/account" ariaCurrentWhenActive="page">Compte</a></li>
+      <li routerLinkActive="active"><a routerLink="/unknown-slack-accounts" ariaCurrentWhenActive="page">Comptes Slack à désactiver</a></li>
+      <li><a routerLink="" (click)="logout()">Logout</a></li>
+    </ul>
+  </nav>
+  <router-outlet></router-outlet>
+}
 
-<ng-template #isLoggedIn>
-<nav>
-	<ul class="menu">
-		<li routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/" ariaCurrentWhenActive="page">Membres</a></li>
-		<li routerLinkActive="active"><a routerLink="/account" ariaCurrentWhenActive="page">Compte</a></li>
-		<li routerLinkActive="active"><a routerLink="/unknown-slack-accounts" ariaCurrentWhenActive="page">Comptes Slack à désactiver</a></li>
-		<li><a routerLink="" (click)="logout()">Logout</a></li>
-	</ul>
-</nav>
-
-<router-outlet></router-outlet>
-</ng-template>

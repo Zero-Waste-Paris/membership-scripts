@@ -1,6 +1,10 @@
-<div class="loading" *ngIf="!membersLoaded"><mat-spinner></mat-spinner></div>
+@if (!membersLoaded) {
+  <div class="loading"><mat-spinner></mat-spinner></div>
+}
 
-<div *ngIf="membersLoaded">
-	<app-members-list [members]="members" ></app-members-list>
-</div>
+@if (membersLoaded) {
+  <div>
+    <app-members-list [members]="members" ></app-members-list>
+  </div>
+}
 

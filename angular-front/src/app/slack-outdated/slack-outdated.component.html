@@ -1,11 +1,22 @@
-<div *ngIf="!data"><mat-spinner></mat-spinner></div>
+@if (!data) {
+  <div><mat-spinner></mat-spinner></div>
+}
 
-<div *ngIf="data">
-	<span *ngIf="!data.isFresh" class="warning">Utilisation de données en cache datant de {{this.data.timestamp*1000 | date:'y-MM-ddThh:mm:ssZZZZZ'}}</span>
-
-	<span *ngIf="!data.members || data.members.length == 0">A jour</span>
-	<ul *ngIf="data.members && data.members.length > 0">
-		<li *ngFor="let member of this.data.members">{{member}}</li>
-	</ul>
-</div>
+@if (data) {
+  <div>
+    @if (!data.isFresh) {
+      <span class="warning">Utilisation de données en cache datant de {{this.data.timestamp*1000 | date:'y-MM-ddThh:mm:ssZZZZZ'}}</span>
+    }
+    @if (!data.members || data.members.length == 0) {
+      <span>A jour</span>
+    }
+    @if (data.members && data.members.length > 0) {
+      <ul>
+        @for (member of this.data.members; track member) {
+          <li>{{member}}</li>
+        }
+      </ul>
+    }
+  </div>
+}
 
