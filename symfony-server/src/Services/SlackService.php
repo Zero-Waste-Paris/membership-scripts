@@ -94,7 +94,7 @@ class SlackService {
 		$intersection = array_intersect($membersEmail, $emailsOfDeactivatedSlackUsers);
 
 		$result = array();
-		foreach ($intersection as $index => $email) {
+		foreach ($intersection as $email) {
 			$result []= $email;
 		}
 		return new SlackMembersTimestamped($allSlackUsers->getTimestamp(), $result, $allSlackUsers->isFresh());
