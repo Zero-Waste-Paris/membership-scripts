@@ -13,7 +13,6 @@ SCRIPT_DIR="$(realpath "$(dirname "$THIS_FILE")")"
 ROOT_DIR="$SCRIPT_DIR/.."
 TEMPORARY_RELEASE_DIR="$ROOT_DIR/temp_for_release"
 BACK_DIR="$ROOT_DIR/symfony-server"
-SLACK_APP_DIR="$ROOT_DIR/slack-agenda-app"
 
 # parse arguments
 TARGET_ENVIRONMENT=preprod # default value; overridable by cli options
@@ -41,7 +40,6 @@ done
 echo "Going to deploy to environment: $TARGET_ENVIRONMENT"
 
 CONF_DIR="$SCRIPT_DIR"/"$TARGET_ENVIRONMENT-config"
-SLACK_CONF_DIR="$CONF_DIR"/slack-config
 LOCAL_CONF_FILE="$CONF_DIR"/deploysymfony-config.sh
 
 
@@ -56,7 +54,6 @@ function testFileOrDie {
 }
 testFileOrDie "$CONF_DIR/htaccess"
 testFileOrDie "$CONF_DIR/symfony.conf"
-testFileOrDie "$SLACK_CONF_DIR"/config.json
 testFileOrDie "$LOCAL_CONF_FILE"
 
 # Load conf
@@ -125,20 +122,6 @@ rm -f "$DIST_DIR/favicon.ico"
 SYMFONY_PUBLIC_DIR="$TEMPORARY_RELEASE_DIR/public"
 rm -f "$SYMFONY_PUBLIC_PATH"/{index.html,main.*.js,main.js,polyfills.*.js,polyfill.js,runtime.*.js,runtime.js,styles.*.css,style.css,*map,vendor.js,3rdpartylicenses.txt,assets}
 cp -r "$DIST_DIR"/* "$SYMFONY_PUBLIC_DIR"
-
-# Install the slack app
-pushd $ROOT_DIR
-git submodule init
-git submodule update
-popd
-
-pushd "$TEMPORARY_RELEASE_DIR"
-cp -ar "$SLACK_APP_DIR" public
-rm -rf public/slack-agenda-app/{.git*,tests}
-pushd public/slack-agenda-app
-cp "$SLACK_CONF_DIR"/config.json .
-composer install --no-dev --optimize-autoloader
-popd
 
 # Releasing
 echo "All good, we're going to perform the release to $TARGET_ENVIRONMENT"
