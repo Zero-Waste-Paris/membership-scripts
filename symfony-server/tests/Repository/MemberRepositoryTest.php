@@ -24,6 +24,12 @@ final class MemberRepositoryTest extends KernelTestCase {
 	public function test_addOrUpdateMember() {
 		$debug = false;
 		$sut = self::getContainer()->get(MemberRepository::class);
+
+        // Precondition
+		$members = $this->findAllSortedMembers($sut);
+		$this->assertEquals(0, count($members), "We should start with no members");
+
+
 		$bobRegistrationDate = "1985-04-03";
 		$registrationBob = $this->buildHelloassoEvent($bobRegistrationDate, "bob", "dylan", "bob@dylan.com");
 		$aliceRegistrationDate = "1865-11-01";
