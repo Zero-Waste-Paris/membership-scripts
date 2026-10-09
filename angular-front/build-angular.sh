@@ -15,5 +15,5 @@ popd
 
 rm -f "$PHP_PUBLIC_PATH"/{index.html,main.*.js,polyfills.*.js,runtime.*.js,styles.*.css,*map}
 DIST_DIR="$THIS_DIR/dist/angular-front/browser"
-rm "$DIST_DIR/favicon.ico"
+rm -f "$DIST_DIR/favicon.ico"
 cp -r "$DIST_DIR"/* "$PHP_PUBLIC_PATH"
